@@ -1,8 +1,11 @@
 #include <iostream>
 
+#include "ExampleClass.h"
+
 int main(int argc, char* argv[]) {
 
-    std::cout << "Foo" << std::endl;
+    ExampleClass exampleClass(5);
+    std::cout << exampleClass.getExampleVar() << std::endl;
 
     return 0;
 
