@@ -12,6 +12,9 @@ cmake-build-debug/
 # MacOS .DS_Store Files
 .DS_Store
 
+# MacOS .DS_Store Files
+.DS_Store
+
 # Prerequisites
 *.d
 
