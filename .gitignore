@@ -1,5 +1,9 @@
 # Build Directory
 build/
+cmake-build-debug/
+
+# CLion Project Directory
+.idea/
 
 # MacOS .DS_Store Files
 .DS_Store
