@@ -98,6 +98,8 @@ int main(int argc, char* argv[])
     }
     std::cout << "\nExiting Program...";
 
+    CSVObject csv;
+
     return 0;
 
 }
