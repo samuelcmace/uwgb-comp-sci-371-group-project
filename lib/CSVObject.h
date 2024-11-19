@@ -1,5 +1,5 @@
 //
-// Created by samue on 11/18/2024.
+// Created by Samuel Mace <samuelcmace@gmail.com> on 11/18/2024.
 //
 
 #ifndef CSVOBJECT_H
@@ -9,7 +9,7 @@
 #include <string>
 #include <fstream>
 
-class CSVObject final {
+class CSVObject {
 private:
     std::string filePath;
     unsigned int columnCount;
