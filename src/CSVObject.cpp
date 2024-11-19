@@ -11,11 +11,9 @@
  */
 CSVObject::CSVObject(std::vector<std::string> columnNames, std::string filePath) {
     this->filePath = filePath;
-    this->columnCount = columnNames.size();
-    for(int i = 0; i < columnCount; i++) {
+    for(int i = 0; i < columnNames.size(); i++) {
         this->data[i].assign(0, columnNames.at(i));
     }
-    this->rowCount = 1;
 }
 
 /**
@@ -84,11 +82,11 @@ void CSVObject::writeFile() {
 
     if(outputFile.is_open()) {
 
-        for (int i = 0; i < this->rowCount; i++) {
+        for (int i = 0; i < this->getRowCount(); i++) {
             std::string row;
-            for(int j = 0; j < this->columnCount; j++) {
+            for(int j = 0; j < this->getColCount(); j++) {
                 row += "\"" + this->data[i][j] + "\"";
-                if(j < this->columnCount - 1) {
+                if(j < this->getColCount() - 1) {
                     row += ",";
                 }
             }
@@ -98,4 +96,20 @@ void CSVObject::writeFile() {
         outputFile.close();
 
     }
+}
+
+/**
+ * Method to retrieve the number of columns in the CSV file. This data value is based on the number of entries
+ * in the root data vector.
+ */
+int CSVObject::getColCount() const {
+    return this->data.size();
+}
+
+/**
+ * Method to retrieve the number of rows in the CSV file. If the CSVObject has at-least one column (as it should),
+ * then return the size of the first column. Otherwise, return 0 for an empty data vector.
+ */
+int CSVObject::getRowCount() const {
+    return this->getColCount() > 0 ? this->data[0].size() : 0;
 }

@@ -12,15 +12,17 @@
 class CSVObject {
 private:
     std::string filePath;
-    unsigned int columnCount;
-    unsigned int rowCount;
     std::vector<std::vector<std::string>> data;
+
+protected:
+    int getRowCount() const;
+    int getColCount() const;
     void readFile();
+    void writeFile();
 
 public:
     CSVObject(std::vector<std::string> columnNames, std::string filePath);
     virtual ~CSVObject();
-    void writeFile();
 
 };
 
