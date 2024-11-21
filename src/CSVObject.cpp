@@ -9,10 +9,10 @@
  * @param columnNames The names that define the schema of the CSV file.
  * @param filePath The directory on the filesystem where the CSV file will be located.
  */
-CSVObject::CSVObject(std::vector<std::string> columnNames, std::string filePath) {
+CSVObject::CSVObject(std::string filePath, std::string columnNames[]) {
     this->filePath = filePath;
-    for(int i = 0; i < columnNames.size(); i++) {
-        this->data[i].assign(0, columnNames.at(i));
+    for(int i = 0; i < sizeof(columnNames); i++) {
+        this->data[0].assign(i, columnNames[i]);
     }
 }
 
@@ -32,41 +32,23 @@ void CSVObject::readFile() {
 
     if(inputFile.is_open()) {
         std::string line;
-        int lineNumber = 1;
+        int lineNumber = 0;
         while(std::getline(inputFile, line)) {
-            // Create vectors to store the indices where the quotation marks and commas are located in the
-            std::vector<int> quotationMarkPositions;
-            std::vector<int> commasPositions;
+            std::vector<int> commaIndices;
 
-            // Go through the line character by character and locate the indices where either a quotation mark or a
-            // comma appear. Note these in corresponding vectors that we will use later in the algorithm.
-            for(int i = 0; i < line.size(); i++) {
-                if(line[i] == ',') {
-                    commasPositions.push_back(i);
-                } else if(line[i] == '"') {
-                    quotationMarkPositions.push_back(i);
-                }
+            int currentIndex = 0;
+            while(currentIndex < line.size()) {
+                currentIndex = line.find(",", currentIndex);
+                commaIndices.push_back(currentIndex);
             }
 
-            // After going through the line completely, if the number of quotation mark characters in a given line
-            // is not divisible by 2, throw an exception.
-            if(quotationMarkPositions.size() % 2 == 1) {
-                throw std::runtime_error("Error: Invalid CSV Syntax on Line " + std::to_string(lineNumber) + " in '" + filePath + "'. The number of quotation marks in any given line should be divisible by 2!");
+            for(int i = 1; i < commaIndices.size(); i++) {
+                int lastIndex = commaIndices[i - 1];
+                int currentIndex = commaIndices[i];
+                int substringLength = lastIndex - currentIndex;
+                this->data[i].push_back(line.substr(lastIndex, substringLength));
             }
 
-            int currentCommaIndex = 0;
-            // Go through the quotation mark indices list to group the line into substrings.
-            for(int i = 1; i < quotationMarkPositions.size(); i = i + 2) {
-                // Perform an additional check to see if there are any commas hiding in between the quotation marks...
-                int leftIndex = quotationMarkPositions[i - 1];
-                int rightIndex = quotationMarkPositions[i];
-                while(commasPositions[currentCommaIndex] < rightIndex &&
-                    commasPositions[currentCommaIndex] > leftIndex &&
-                    currentCommaIndex < commasPositions.size()) {
-                    currentCommaIndex++;
-                }
-                this->data[floor(i / 2)].push_back(line.substr(leftIndex, rightIndex));
-            }
             lineNumber++;
         }
         inputFile.close();
@@ -85,7 +67,7 @@ void CSVObject::writeFile() {
         for (int i = 0; i < this->getRowCount(); i++) {
             std::string row;
             for(int j = 0; j < this->getColCount(); j++) {
-                row += "\"" + this->data[i][j] + "\"";
+                row += this->data[i][j];
                 if(j < this->getColCount() - 1) {
                     row += ",";
                 }
@@ -99,17 +81,93 @@ void CSVObject::writeFile() {
 }
 
 /**
- * Method to retrieve the number of columns in the CSV file. This data value is based on the number of entries
+ * Method to retrieve the number of rows in the CSV file. This data value is based on the number of entries
  * in the root data vector.
  */
-int CSVObject::getColCount() const {
+int CSVObject::getRowCount() const {
     return this->data.size();
 }
 
 /**
- * Method to retrieve the number of rows in the CSV file. If the CSVObject has at-least one column (as it should),
+ * Method to retrieve the number of columns in the CSV file. If the CSVObject has at-least one column (as it should),
  * then return the size of the first column. Otherwise, return 0 for an empty data vector.
  */
-int CSVObject::getRowCount() const {
+int CSVObject::getColCount() const {
     return this->getColCount() > 0 ? this->data[0].size() : 0;
+}
+
+int CSVObject::queryRowNumber(std::string colKey, std::string colValue, int startingRowIndex = 0) {
+
+    // Determine the column mapping using the provided column key colKey...
+    int colIndex = -1;
+    for(int i = 0; i < this->data[0].size(); i++) {
+        if(this->data[0][i] == colKey) {
+            colIndex = i;
+            break;
+        }
+    }
+
+    if(colIndex == -1) {
+        throw std::runtime_error("Error: The requested column '" + colKey + "' was not found in the file '" + filePath + "'. Aborting!");
+    }
+
+    // Query the row index where the specified object is...
+    int rowIndex = -1;
+    for(int i = 0; i < this->data.size(); i++) {
+        if(this->data[i][colIndex] == colValue) {
+            rowIndex = i;
+            break;
+        }
+    }
+
+    // If the requested data was not found, the function will return -1. Otherwise, it will return the corresponding row index.
+    return rowIndex;
+
+}
+
+void CSVObject::createRow(std::vector<std::string> rowContents) {
+
+
+
+    // Call the writeFile() method to persist the changes.
+    writeFile();
+}
+
+std::vector<std::string> CSVObject::readRow(int lineNumber) {
+
+    std::vector<std::string> rowContents;
+
+    return rowContents;
+
+}
+
+void CSVObject::updateRow(int lineNumber, std::vector<std::string> newRowContents) {
+
+
+
+    // Call the writeFile() method to persist the changes.
+    writeFile();
+}
+
+/**
+ *
+ * @param lineNumber
+ */
+void CSVObject::deleteRow(int lineNumber) {
+
+
+
+    // Call the writeFile() method to persist the changes.
+    writeFile();
+}
+
+void CSVObject::print() const {
+
+    for(int i = 0; i < this->getRowCount(); i++) {
+        for(int j = 0; j < this->getColCount(); j++) {
+            std::cout << this->data[j][i] << ", ";
+        }
+        std::cout << std::endl;
+    }
+
 }
