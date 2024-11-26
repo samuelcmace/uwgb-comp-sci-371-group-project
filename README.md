@@ -15,14 +15,13 @@ title: Bank Account Application
 classDiagram
     class User {
         <<Abstract>>
-        -unsigned long userID
+        -std::string username
         -std::string password
 
         +User(username, password)
         +void login()
-        +unsigned long getUserID()
+        +std::string getUsername()
         +std::string getPassword()
-        +void setPassword(unsigned long )
     }
     class Transaction {
         -int transactionID
@@ -50,4 +49,9 @@ classDiagram
     }
     User <|-- Customer
     User <|-- BankManager
+    class UserManager {
+        -std::vector<User> users
+        +void addUser()
+    }
+    CSVObject <|-- UserManager
 ```
