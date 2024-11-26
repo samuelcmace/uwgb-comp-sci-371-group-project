@@ -1,5 +1,6 @@
 # Specify the minimum version of CMake that is required to build the project.
 cmake_minimum_required(VERSION 3.10)
+project(bank_application)
 
 # Set the name for the project.
 project(bank_application)
@@ -18,6 +19,10 @@ enable_testing()
 # need to be linked to all executables.
 set(SOURCES
     src/CSVObject.cpp
+    src/BankAccount.cpp
+    src/CSVObject.cpp
+    src/UserManager.cpp
+    src/User.cpp
 )
 
 # Copy the assets directory from the source directory into whatever the output (or build) directory happens to be...
