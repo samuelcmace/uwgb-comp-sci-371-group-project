@@ -65,12 +65,17 @@ void CSVObject::readFile() {
                 commaIndices.push(currentIndex);
             }
 
-            do {
-                const int nextIndex = commaIndices.front();
-                commaIndices.pop();
+            int nextIndex = commaIndices.front();
+            while(!commaIndices.empty() && nextIndex < line.size()) {
+                if (commaIndices.empty()) {
+                    nextIndex = line.size();
+                } else {
+                    nextIndex = commaIndices.front();
+                    commaIndices.pop();
+                }
                 this->data[lineNumber].push_back(line.substr(currentIndex, nextIndex - currentIndex));
                 currentIndex = nextIndex;
-            } while (!commaIndices.empty());
+            }
 
             lineNumber++;
         }
