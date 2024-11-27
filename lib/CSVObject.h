@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <filesystem>
 
 class CSVObject {
 private:
@@ -28,7 +29,7 @@ protected:
     void deleteRow(int lineNumber);
 
 public:
-    CSVObject(std::string filePath, std::string columnNames[]);
+    CSVObject(std::string filePath, std::vector<std::string> columnNames);
     virtual ~CSVObject();
 
 };

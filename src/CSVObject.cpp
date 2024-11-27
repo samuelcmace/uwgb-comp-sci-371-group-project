@@ -9,11 +9,31 @@
  * @param columnNames The names that define the schema of the CSV file.
  * @param filePath The directory on the filesystem where the CSV file will be located.
  */
-CSVObject::CSVObject(std::string filePath, std::string columnNames[]) {
+CSVObject::CSVObject(std::string filePath, std::vector<std::string> columnNames) {
+
     this->filePath = filePath;
-    for(int i = 0; i < sizeof(columnNames); i++) {
-        this->data[0].assign(i, columnNames[i]);
+
+    // Use the C++17 std::filesystem namespace to check whether the file exists on the system first...
+    bool fileAlreadyExists = std::filesystem::exists(filePath);
+
+    std::cout << "Reading from file " << filePath << "..." << std::endl;
+    this->readFile();
+
+    // If the file already existed prior to reading from it, check if the column names align with what is specified
+    // in the schema. If not, throw a runtime error...
+    if (fileAlreadyExists) {
+        std::cout << "Verifying schema of column names..." << std::endl;
+        bool columnsMatch = true;
+        for (int i = 0; i < this->data[0].size(); i++) {
+            if (this->data[0][i] != columnNames[i]) {
+                columnsMatch = false;
+            }
+        }
+        if (!columnsMatch) {
+            throw std::runtime_error("Error: The specified column names do not match! Aborting...");
+        }
     }
+
 }
 
 /**
@@ -34,20 +54,23 @@ void CSVObject::readFile() {
         std::string line;
         int lineNumber = 0;
         while(std::getline(inputFile, line)) {
-            std::vector<int> commaIndices;
 
+            // Store the indexes of the commas as a queue data structure so that we can easily pop them when we are
+            // ready to read the line.
+            std::queue<int> commaIndices;
             int currentIndex = 0;
+
             while(currentIndex < line.size()) {
                 currentIndex = line.find(",", currentIndex);
-                commaIndices.push_back(currentIndex);
+                commaIndices.push(currentIndex);
             }
 
-            for(int i = 1; i < commaIndices.size(); i++) {
-                int lastIndex = commaIndices[i - 1];
-                int currentIndex = commaIndices[i];
-                int substringLength = lastIndex - currentIndex;
-                this->data[i].push_back(line.substr(lastIndex, substringLength));
-            }
+            do {
+                const int nextIndex = commaIndices.front();
+                commaIndices.pop();
+                this->data[lineNumber].push_back(line.substr(currentIndex, nextIndex - currentIndex));
+                currentIndex = nextIndex;
+            } while (!commaIndices.empty());
 
             lineNumber++;
         }
@@ -96,7 +119,7 @@ int CSVObject::getColCount() const {
     return this->getColCount() > 0 ? this->data[0].size() : 0;
 }
 
-int CSVObject::queryRowNumber(std::string colKey, std::string colValue, int startingRowIndex = 0) {
+int CSVObject::queryRowNumber(std::string colKey, std::string colValue, int startingRowIndex) {
 
     // Determine the column mapping using the provided column key colKey...
     int colIndex = -1;
