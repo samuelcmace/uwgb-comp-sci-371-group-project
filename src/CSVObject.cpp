@@ -68,6 +68,7 @@ void CSVObject::readFile() {
             }
 
             int previousIndex;
+            this->data.resize(this->data.size() + 1);
             for (int i = 0; i <= commaIndices.size(); i++) {
                 if (i == 0) {
                     previousIndex = 0;
@@ -221,7 +222,10 @@ void CSVObject::print() const {
 
     for(int i = 0; i < this->getRowCount(); i++) {
         for(int j = 0; j < this->getColCount(); j++) {
-            std::cout << this->data[j][i] << ", ";
+            std::cout << this->data[i][j];
+            if (j < this->getColCount() - 1) {
+                std::cout << ",";
+            }
         }
         std::cout << std::endl;
     }
