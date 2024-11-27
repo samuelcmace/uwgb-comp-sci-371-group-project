@@ -37,11 +37,11 @@ CSVObject::CSVObject(std::string filePath, std::vector<std::string> columnNames)
 }
 
 /**
- * Method to deallocate the heap-allocated data.
+ * Method to deallocate the heap-allocated data. Since at the time of writing, the class was not allocating any
+ * heap-allocated data, a default destructor is fine. Otherwise, the default keyword can be replaced with an
+ * implementation of the destructor as needed.
  */
-CSVObject::~CSVObject() {
-
-}
+CSVObject::~CSVObject() = default;
 
 /**
  * Method to read the CSV file and populate the CSVObject accordingly. Called only once during the CSVObject

@@ -10,7 +10,9 @@ set(SOURCES
     src/CSVObject.cpp
 )
 
+file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
 
 add_executable(${PROJECT_NAME} ${SOURCES} main.cpp)
-add_executable(Tests ${SOURCES} tests/UnitTests.cpp)
+add_executable(CSVLoadTest ${SOURCES} tests/UnitTests.cpp)
+
 add_test(NAME CSVLoadTest COMMAND CSVLoadTest)
