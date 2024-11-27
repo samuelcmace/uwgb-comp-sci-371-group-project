@@ -177,7 +177,6 @@ int CSVObject::queryRowNumber(std::string colKey, std::string colValue, int star
 void CSVObject::createRow(std::vector<std::string> rowContents) {
     this->data.push_back(rowContents);
     writeFile();
-
 }
 
 /**
