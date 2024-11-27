@@ -4,9 +4,12 @@
 
 #include "CSVObject.h"
 
+#include <string>
+#include <vector>
+
 class TestCSVObject : public CSVObject {
     public:
-        TestCSVObject() : CSVObject("assets/test_data/accounts.csv", std::vector<std::string>({"username", "password", "accountID"})) {}
+        TestCSVObject(std::string p_filepath, std::vector<std::string> p_columnNames) : CSVObject(p_filepath, p_columnNames) {}
         void testPrint() const {
             print();
         }
@@ -14,7 +17,8 @@ class TestCSVObject : public CSVObject {
 
 int main(int argc, char **argv) {
 
-    const TestCSVObject test;
+    std::vector<std::string> columnNames = {"username", "password", "accountID"};
+    const TestCSVObject test("assets/test_data/accounts.csv", columnNames);
     test.testPrint();
 
     return 0;

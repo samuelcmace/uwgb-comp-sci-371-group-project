@@ -12,7 +12,6 @@
 CSVObject::CSVObject(std::string filePath, std::vector<std::string> columnNames) {
 
     this->filePath = filePath;
-    this->data = std::vector(1, std::vector<std::string>());
 
     // Use the C++17 std::filesystem namespace to check whether the file exists on the system first...
     bool fileAlreadyExists = std::filesystem::exists(filePath);
