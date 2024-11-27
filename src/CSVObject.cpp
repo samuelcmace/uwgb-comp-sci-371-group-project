@@ -12,6 +12,7 @@
 CSVObject::CSVObject(std::string filePath, std::vector<std::string> columnNames) {
 
     this->filePath = filePath;
+    this->data = std::vector(1, std::vector<std::string>());
 
     // Use the C++17 std::filesystem namespace to check whether the file exists on the system first...
     bool fileAlreadyExists = std::filesystem::exists(filePath);
@@ -57,24 +58,28 @@ void CSVObject::readFile() {
 
             // Store the indexes of the commas as a queue data structure so that we can easily pop them when we are
             // ready to read the line.
-            std::queue<int> commaIndices;
+            std::vector<int> commaIndices;
             int currentIndex = 0;
 
-            while(currentIndex < line.size()) {
-                currentIndex = line.find(",", currentIndex);
-                commaIndices.push(currentIndex);
+            for (int i = 0; i < line.size(); i++) {
+                if (line[i] == ',') {
+                    commaIndices.push_back(i);
+                }
             }
 
-            int nextIndex = commaIndices.front();
-            while(!commaIndices.empty() && nextIndex < line.size()) {
-                if (commaIndices.empty()) {
-                    nextIndex = line.size();
+            int previousIndex;
+            for (int i = 0; i <= commaIndices.size(); i++) {
+                if (i == 0) {
+                    previousIndex = 0;
+                    currentIndex = commaIndices[i];
+                } else if (i == commaIndices.size()) {
+                    previousIndex = currentIndex + 1;
+                    currentIndex = commaIndices.size() - 1;
                 } else {
-                    nextIndex = commaIndices.front();
-                    commaIndices.pop();
+                    previousIndex = currentIndex + 1;
+                    currentIndex = commaIndices[i];
                 }
-                this->data[lineNumber].push_back(line.substr(currentIndex, nextIndex - currentIndex));
-                currentIndex = nextIndex;
+                this->data[lineNumber].push_back(line.substr(previousIndex, currentIndex - previousIndex));
             }
 
             lineNumber++;
