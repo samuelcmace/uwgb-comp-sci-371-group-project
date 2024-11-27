@@ -86,7 +86,7 @@ void CSVObject::readFile() {
 /**
  * Method to write (or persist) the changes in the CSVObject to the filesystem.
  */
-void CSVObject::writeFile() {
+void CSVObject::writeFile() const {
     // Create a new output file with the truncation mode for overwriting the file as it currently exists.
     std::ofstream outputFile(filePath, std::ofstream::trunc);
 
@@ -121,10 +121,21 @@ int CSVObject::getRowCount() const {
  * then return the size of the first column. Otherwise, return 0 for an empty data vector.
  */
 int CSVObject::getColCount() const {
-    return this->getColCount() > 0 ? this->data[0].size() : 0;
+    return this->getRowCount() > 0 ? this->data[0].size() : 0;
 }
 
-int CSVObject::queryRowNumber(std::string colKey, std::string colValue, int startingRowIndex) {
+/**
+ * Function to query the index at the first sighting of a specified value in a given column, starting at a specific
+ * index.
+ *
+ * @param colKey The key corresponding to the column to be queried.
+ * @param colValue The value that is expected for the column to have.
+ * @param startingRowIndex Since multiple rows may have the same value for the given column, this startingRowIndex
+ *                         specifies where the querying should begin row-wise.
+ * @return An integer corresponding to the index in the data vector where the value for the row was found (starting on
+ *         the startingRowIndex.
+ */
+int CSVObject::queryRowNumber(std::string colKey, std::string colValue, int startingRowIndex) const {
 
     // Determine the column mapping using the provided column key colKey...
     int colIndex = -1;
@@ -141,7 +152,7 @@ int CSVObject::queryRowNumber(std::string colKey, std::string colValue, int star
 
     // Query the row index where the specified object is...
     int rowIndex = -1;
-    for(int i = 0; i < this->data.size(); i++) {
+    for(int i = startingRowIndex; i < this->data.size(); i++) {
         if(this->data[i][colIndex] == colValue) {
             rowIndex = i;
             break;
@@ -153,42 +164,54 @@ int CSVObject::queryRowNumber(std::string colKey, std::string colValue, int star
 
 }
 
+/**
+ * Method to add a row to the file.
+ *
+ * @param rowContents A vector containing the row contents (each column entry contained in a string).
+ */
 void CSVObject::createRow(std::vector<std::string> rowContents) {
-
-
-
-    // Call the writeFile() method to persist the changes.
+    this->data.push_back(rowContents);
     writeFile();
-}
-
-std::vector<std::string> CSVObject::readRow(int lineNumber) {
-
-    std::vector<std::string> rowContents;
-
-    return rowContents;
 
 }
 
+/**
+ * Method to read data from a row in the CSV file given a line number.
+ *
+ * @param lineNumber The line number containing the data to be read.
+ * @return A vector of strings corresponding to the data that was read by the function.
+ */
+std::vector<std::string> CSVObject::readRow(int lineNumber) const {
+    return this->data[lineNumber];
+}
+
+/**
+ * Function to update the row in the CSV file given a line number and a vector containing the new column entry data
+ * to be overwritten.
+ *
+ * @param lineNumber An integer corresponding to the line number on which the data appears.
+ * @param newRowContents The new row contents that will replace the old ones.
+ */
 void CSVObject::updateRow(int lineNumber, std::vector<std::string> newRowContents) {
-
-
-
-    // Call the writeFile() method to persist the changes.
+    // We can use the std::move operator, which works with the standard template library for the vector class
+    // to allow for the efficient transfer of resources.
+    this->data[lineNumber] = std::move(newRowContents);
     writeFile();
 }
 
 /**
+ * Method to delete the row given a corresponding line number.
  *
- * @param lineNumber
+ * @param lineNumber An integer corresponding to the line number to be deleted.
  */
 void CSVObject::deleteRow(int lineNumber) {
-
-
-
-    // Call the writeFile() method to persist the changes.
+    this->data.erase(this->data.begin() + lineNumber);
     writeFile();
 }
 
+/**
+ * Method to print out the CSVObject as comma-separated entries using std::cout.
+ */
 void CSVObject::print() const {
 
     for(int i = 0; i < this->getRowCount(); i++) {
