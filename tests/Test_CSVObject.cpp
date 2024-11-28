@@ -41,77 +41,117 @@ public:
     }
 };
 
-void firstRowMatchesTest() {
-    std::vector<std::string> columnNames = {"username", "password", "accountID"};
-    const TestCSVObject test("assets/test_data/accounts.csv", columnNames);
+/**
+ * Unit test on the mock CSV file to determine whether the column row matches the expected values.
+ */
+void readRowTest() {
 
-    // Test 1: Assert that the vector of columns columnNames is equal to the first row...
+    std::cout << "Executing Row Read Test..." << std::endl;
+
+    const std::vector<std::string> columnNames = {"username", "password", "accountID"};
+
+    TestCSVObject test("assets/test_data/accounts.csv", columnNames);
     std::vector<std::string> firstRow = test.testReadRow(0);
 
-    for (int i = 0; i < firstRow.size(); i++) {
-        if (firstRow[i] != columnNames[i]) {
-            throw std::runtime_error("First Row Matching Test Failed!");
-        }
+    // The std::vector class provides an operator overload for the == and != operators that automatically
+    // compare the elements in the vectors for us without us having to compare the values manually.
+    if(firstRow != columnNames) {
+        throw std::runtime_error("First Row Matching Test Failed!");
+    } else {
+        std::cout << "Row Read Test Passed!" << std::endl;
     }
-    std::cout << "Passed First Row Test!" << std::endl;
+
 }
 
-void lastRowMatchesTest() {
-    std::vector<std::string> columnNames = {"username", "password", "accountID"};
-    const TestCSVObject test("assets/test_data/accounts.csv", columnNames);
-
-    std::vector<std::string> expectedLastRow = {"tpkqjhvi", "wgmhBZ7Q0z", "593136"};
-    std::vector<std::string> actualLastRow = test.testReadRow(test.testGetRowCount() - 1);
-
-    for (int i = 0; i < actualLastRow.size(); i++) {
-        if (actualLastRow[i] != expectedLastRow[i]) {
-            throw std::runtime_error("Last Row Matching Test Failed!");
-        }
-    }
-    std::cout << "Passed Last Row Test!" << std::endl;
-}
-
+/**
+ *  
+ */
 void createRowTest() {
 
-    std::vector<std::string> columnNames = {"username", "password", "accountID"};
-    TestCSVObject test("assets/test_data/accounts.csv", columnNames);
+    std::cout << "Executing Row Creation Test..." << std::endl;
 
-    std::vector<std::string> expectedLastRow = {"tpkqjhvi", "wgmhBZ7Q0z", "593136"};
-    std::vector<std::string> actualLastRow = test.testReadRow(test.testGetRowCount() - 1);
+    const std::vector<std::string> columnNames = {"username", "password", "accountID"};
 
-    for (int i = 0; i < actualLastRow.size(); i++) {
-        if (actualLastRow[i] != expectedLastRow[i]) {
-            throw std::runtime_error("Last Row Matching Test Failed!");
-        }
+    TestCSVObject writeTest("assets/test_data/accounts.csv", columnNames);
+    std::vector<std::string> expectedNewRow = {"asdfjkl", "123fdfgdsFD", "1234543"};
+    writeTest.testCreateRow(expectedNewRow);
+
+    TestCSVObject readTest("assets/test_data/accounts.csv", columnNames);
+    std::vector<std::string> actualNewRow = readTest.testReadRow(readTest.testGetRowCount() - 1);
+
+    if(expectedNewRow != actualNewRow) {
+        throw std::runtime_error("Row Creation Test: FAIL");
+    } else {
+        std::cout << "Row Creation Test: PASS" << std::endl;
     }
-
-    std::vector<std::string> newRow = {"asdfjkl", "123fdfgdsFD", "1234543"};
-    test.testCreateRow(newRow);
-
-
 
 }
 
 void deleteRowTest() {
 
-    std::vector<std::string> columnNames = {"username", "password", "accountID"};
-    const TestCSVObject test("assets/test_data/accounts.csv", columnNames);
+    std::cout << "Executing Row Deletion Test..." << std::endl;
+
+    const std::vector<std::string> columnNames = {"username", "password", "accountID"};
+
+    TestCSVObject deleteObject("assets/test_data/accounts.csv", columnNames);
+
+    int deletedIndex = deleteObject.testGetRowCount() - 1;
+    std::vector<std::string> deletedRow = deleteObject.testReadRow(deletedIndex);
+    deleteObject.testDeleteRow(deletedIndex);
+
+    TestCSVObject readTest("assets/test_data/accounts.csv", columnNames);
+
+    int lastIndex = readTest.testGetRowCount() - 1;
+    std::vector<std::string> lastRow = readTest.testReadRow(lastIndex);
+
+    // In this case, there would be an error if the last row and the deleted row were equal.
+    // In a theoretical case, the deletion could occur as expected and the exception thrown
+    // if there are two rows of data that are exactly the same positioned towards the end
+    // of the vector. However, in that case, the data would be quite useless and the
+    // exception would be cause for investigation.
+    if(lastRow == deletedRow) {
+        throw std::runtime_error("Row Deletion Test: FAIL");
+    } else {
+        std::cout << "Row Deletion Test: PASS" << std::endl;
+    }
+
 }
 
 void updateRowTest() {
 
-    std::vector<std::string> columnNames = {"username", "password", "accountID"};
-    const TestCSVObject test("assets/test_data/accounts.csv", columnNames);
+    std::cout << "Executing Row Update Test..." << std::endl;
+
+    const std::vector<std::string> columnNames = {"username", "password", "accountID"};
+
+    TestCSVObject firstObject("assets/test_data/accounts.csv", columnNames);
+    int lastIndex = firstObject.testGetRowCount() - 1;
+    std::vector<std::string> lastRowOriginal = firstObject.testReadRow(lastIndex);
+
+    // Use the copy constructor for the vector to create a duplicate row that can be modified.
+    // Then, update the row by overwriting the index with the new data.
+    std::vector<std::string> lastRowUpdated = lastRowOriginal;
+    lastRowUpdated[0] = "Hello World";
+    firstObject.testUpdateRow(lastIndex, lastRowUpdated);
+
+    TestCSVObject secondObject("assets/test_data/accounts.csv", columnNames);
+    int lastIndexCurrent = firstObject.testGetRowCount() - 1;
+    std::vector<std::string> lastRowCurrent = firstObject.testReadRow(lastIndex);
+
+    if(lastRowCurrent == lastRowOriginal) {
+        throw std::runtime_error("Row Update Test: FAIL");
+    } else {
+        std::cout << "Row Update Test: PASS" << std::endl;
+    }
+
 }
 
 int main(int argc, char **argv) {
 
     try {
-        std::cout << "Running First Row Test..." << std::endl;
-        firstRowMatchesTest();
-
-        std::cout << "Running Last Row Test..." << std::endl;
-        lastRowMatchesTest();
+        readRowTest();
+        createRowTest();
+        deleteRowTest();
+        updateRowTest();
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
     }
