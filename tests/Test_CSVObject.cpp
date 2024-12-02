@@ -2,7 +2,7 @@
 // Created by Samuel Mace on 2024/11/26.
 //
 
-#include "CSVObject.h"
+#include "lib/CSVObject.h"
 
 #include <string>
 #include <vector>
