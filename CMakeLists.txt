@@ -20,9 +20,11 @@ enable_testing()
 set(SOURCES
     src/CSVObject.cpp
     src/BankAccount.cpp
-    src/CSVObject.cpp
     src/UserManager.cpp
     src/User.cpp
+    src/Customer.cpp
+    src/Transaction.cpp
+    main.cpp
 )
 
 # Copy the assets directory from the source directory into whatever the output (or build) directory happens to be...
