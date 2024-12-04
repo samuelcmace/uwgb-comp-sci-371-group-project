@@ -57,7 +57,6 @@ int main(int argc, char* argv[])
                     //Withdrawal Selected
                     //TODO
                     //verify availability of funds, deduct specified amount if funds are available
-
                 }
                 else if (userOptions == 2)
                 {
