@@ -1,0 +1,37 @@
+//
+// Created by Bibesh Pyakurel on 12/1/24.
+//
+
+#ifndef CUSTOMER_H
+#define CUSTOMER_H
+
+#include "User.h"
+#include "BankAccount.h"
+#include <memory>  // For using smart pointers
+
+class Customer : public User {
+private:
+    std::unique_ptr<BankAccount> bankAccount;  // Using smart pointer for memory management
+
+public:
+    // Constructor to initialize Customer with username, password, and initial deposit for the bank account
+    Customer(const std::string& username, const std::string& password, unsigned long accountID, double initialBalance);
+
+    // Override the login method to authenticate a customer
+    bool login(const std::string& enteredPassword) override;
+
+    // Get the bank account associated with the customer
+    BankAccount* getBankAccount();
+
+    // Method to deposit money into the customer's bank account
+    bool deposit(double amount);
+
+    // Method to withdraw money from the customer's bank account
+    bool withdraw(double amount);
+
+    // Method to print the customer's account summary
+    void printAccountSummary() const;
+};
+
+#endif // CUSTOMER_H
+

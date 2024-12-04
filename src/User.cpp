@@ -4,19 +4,17 @@
 
 #include "User.h"
 
-User::User(std::string username, std::string password) {
-    this->username = username;
-    this->password = password;
-}
+// Constructor to initialize user with username and password
+User::User(const std::string& username, const std::string& password)
+    : username(username), password(password) {}
 
+//Getter function for username
 std::string User::getUsername() const {
-    return this->username;
+    return username;
 }
 
+//Getter function for password
 std::string User::getPassword() const {
-    return this->password;
+    return password;
 }
 
-bool User::authenticate(std::string username, std::string password) {
-    return this->username == username && this->password == password;
-}

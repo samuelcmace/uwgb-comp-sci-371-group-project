@@ -8,14 +8,23 @@
 #include <string>
 
 class User {
-private:
-    std::string username;
-    std::string password;
+protected:
+    std::string username;  // User's username
+    std::string password;  // User's password
+
 public:
-    User(std::string username, std::string password);
+    // Constructor to initialize username and password
+    User(const std::string& username, const std::string& password);
+
+    virtual ~User() = default;  // Virtual destructor for proper cleanup
+
+    // Pure virtual function for login, to be implemented by derived classes (Customer, BankManager)
+    virtual bool login(const std::string& enteredPassword) = 0;
+
+    // Getter functions for username and password
     std::string getUsername() const;
     std::string getPassword() const;
-    bool authenticate(std::string username, std::string password);
 };
 
-#endif //USER_H
+#endif // USER_H
+
