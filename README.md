@@ -24,17 +24,36 @@ classDiagram
         +std::string getPassword()
     }
     class Transaction {
-        -int transactionID
+        -std::string type
         -std::string date
         -double amount
+        +Transaction(type, amount)
+        +std::string getType()
+        +double getAmount()
+        +std::string getDate()
+        +static std::string getCurrentDate
     }
     class BankAccount {
         -unsigned long accountID
+        -double balance
         -std::vector<Transaction*> transactions
         +BankAccount()
+        +bool deposit()
+        +bool withdraw()
+        +void printAccountSummary()
+        +usinged long getAccountID()
+        +double getBalance()
+        +std::vector<Transaction>& getTransactions()
     }
     Transaction "*" -- "1" BankAccount
     class Customer {
+        -std::unique_ptr bankAccount
+        +Customer(username, password, accountID, initialBalance)
+        +bool login()
+        +BankAccount* getBankAccount()
+        +bool deposit()
+        +bool withdraw()
+        +void printAccountSummary()
 
     }
     Customer "1" -- "*" BankAccount
@@ -51,7 +70,11 @@ classDiagram
     User <|-- BankManager
     class UserManager {
         -std::vector<User> users
+        +UserManager(CSVObject* csvObject)
         +void addUser()
+        +bool authenticate User(username,enteredPassword)
+        +User* getUserByUsername(username)
+        +void loadUsersFromCSV()
     }
     CSVObject <|-- UserManager
 ```
