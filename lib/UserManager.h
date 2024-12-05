@@ -30,6 +30,8 @@ public:
     // Retrieve a user by their username
     User* getUserByUsername(const std::string& username);
 
+    User *&& createUser(const std::string & string, const std::string & password, const std::string & user_type);
+
     // Load users from the CSV file
     void loadUsersFromCSV();
 };
