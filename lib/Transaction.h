@@ -10,25 +10,26 @@
 
 class Transaction {
 private:
-    std::string type;         // Type of transaction (Deposit, Withdrawal, etc.)
-    double amount;            // Amount of money involved in the transaction
+     // Type of withdraw which is either Deposit and Withdrawal
+    double amount;          
     std::string date;         // Date of the transaction
 
 public:
-    // Constructor to initialize a transaction with type, amount, and current date
+    // Constructor to initialize
     Transaction(const std::string& type, double amount);
 
-    // Getter for the transaction type (Deposit, Withdrawal)
+    // Getter for Deposit and Withdrawal
     std::string getType() const;
 
-    // Getter for the transaction amount
+    // Getter for the amount
     double getAmount() const;
 
-    // Getter for the transaction date
+    // Getter for the date
     std::string getDate() const;
 
-    // Helper function to get the current date as a string (in the format YYYY-MM-DD)
+    // Helper function to get the current date as a string
     static std::string getCurrentDate();
+
 };
 
 #endif // TRANSACTION_H

@@ -9,32 +9,34 @@
 #include "User.h"
 #include "CSVObject.h"  // For interaction with CSV files
 
-class UserManager {
+class UserManager final : public CSVObject {
 private:
     std::vector<User*> users;  // List of all users
-    CSVObject* csvObject;      // CSVObject to interact with CSV file for user data
+    UserManager();
 
 public:
-    // Constructor to initialize UserManager with a CSVObject for data persistence
-    UserManager(CSVObject* csvObject);
+    UserManager& getInstance() {
+        static UserManager instance;
+        return instance;
+    }
+    // Prevent the instance from being accidentally copied or assigned (using the assignment operator)
+    // by explicitly setting these methods to delete.
+    UserManager& operator=(const UserManager&) = delete;
+    UserManager(const UserManager&) = delete;
 
     // Destructor to clean up dynamically allocated User objects
     ~UserManager();
 
-    // Add a new user to the list and CSV file
     void addUser(User* user);
 
-    // Authenticate a user based on username and password
     bool authenticateUser(const std::string& username, const std::string& enteredPassword);
 
-    // Retrieve a user by their username
     User* getUserByUsername(const std::string& username);
 
-    User *&& createUser(const std::string & string, const std::string & password, const std::string & user_type);
+    User* createUser(const std::string& createUser, const std::string& password, const std::string& user_type);
 
     // Load users from the CSV file
     void loadUsersFromCSV();
 };
 
 #endif // USERMANAGER_H
-

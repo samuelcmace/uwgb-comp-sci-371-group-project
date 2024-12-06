@@ -23,8 +23,8 @@ set(SOURCES
     src/UserManager.cpp
     src/User.cpp
     src/Customer.cpp
+    src/Employee.cpp
     src/Transaction.cpp
-    main.cpp
 )
 
 # Copy the assets directory from the source directory into whatever the output (or build) directory happens to be...
@@ -35,7 +35,9 @@ file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
 # along with the binary.
 add_executable(bank_application ${SOURCES} main.cpp)
 add_executable(Test_CSVObject ${SOURCES} tests/Test_CSVObject.cpp)
+add_executable(Test_UserManager ${SOURCES} tests/Test_UserManager.cpp)
 
 # The add_test command can be used to use the CTest framework. This provides the benefit that the unit tests will be
 # marked as such when running CTest.
 add_test(NAME Test_CSVObject COMMAND Test_CSVObject)
+add_test(NAME Test_UserManager COMMAND Test_UserManager)

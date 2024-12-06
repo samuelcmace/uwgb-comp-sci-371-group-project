@@ -18,12 +18,15 @@ public:
 
     virtual ~User() = default;  // Virtual destructor for proper cleanup
 
-    // Pure virtual function for login, to be implemented by derived classes (Customer, BankManager)
-    virtual bool login(const std::string& enteredPassword) = 0;
-
     // Getter functions for username and password
     std::string getUsername() const;
     std::string getPassword() const;
+
+    enum Type {
+        CUSTOMER,
+        EMPLOYEE
+    };
+
 };
 
 #endif // USER_H

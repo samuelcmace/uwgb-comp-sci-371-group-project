@@ -12,7 +12,7 @@ Transaction::Transaction(const std::string& type, double amount)
 
 // Getter for the transaction type (Deposit, Withdrawal, etc.)
 std::string Transaction::getType() const {
-    return type;
+    return this->amount > 0 ? "Deposit" : "Withdrawal";
 }
 
 // Getter for the transaction amount

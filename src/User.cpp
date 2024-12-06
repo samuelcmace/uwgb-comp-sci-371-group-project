@@ -17,4 +17,3 @@ std::string User::getUsername() const {
 std::string User::getPassword() const {
     return password;
 }
-

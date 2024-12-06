@@ -10,13 +10,16 @@
 
 class BankAccount {
 private:
-    unsigned long accountID;  //accountID which is unique
+    std::string username;     // User's username
     double balance;           //account balance
     std::vector<Transaction> transactions;  //list of transactions
 
 public:
     //constructor to initialize BankAccount with accountID and initial balance
-    BankAccount(unsigned long accountID, double initialBalance);
+    BankAccount(unsigned long username, double initialBalance);
+
+    //
+    //User* getUserByUsername(const std::string& username);
 
     // Method to deposit money into the account
     bool deposit(double amount);

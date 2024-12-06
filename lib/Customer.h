@@ -11,14 +11,11 @@
 
 class Customer : public User {
 private:
-    std::unique_ptr<BankAccount> bankAccount;  // Using smart pointer for memory management
+    std::unique_ptr<BankAccount> bankAccount;  // Using uniqeu pointer for memory management
 
 public:
     // Constructor to initialize Customer with username, password, and initial deposit for the bank account
-    Customer(const std::string& username, const std::string& password, unsigned long accountID, double initialBalance);
-
-    // Override the login method to authenticate a customer
-    bool login(const std::string& enteredPassword) override;
+    Customer(const std::string& username, const std::string& password);
 
     // Get the bank account associated with the customer
     BankAccount* getBankAccount();

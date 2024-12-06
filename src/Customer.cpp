@@ -6,16 +6,9 @@
 #include <iostream>
 
 // Constructor initializes the customer with a username, password, and an associated bank account
-Customer::Customer(const std::string& username, const std::string& password, unsigned long accountID, double initialBalance)
-    : User(username, password) {
-    // Initialize the customer's bank account with an account ID and an initial balance
-    bankAccount = std::make_unique<BankAccount>(accountID, initialBalance);
-}
-
-// Override the login method for the customer
-bool Customer::login(const std::string& enteredPassword) {
-    // Check if the entered password matches the stored password
-    return enteredPassword == password;
+Customer::Customer(const std::string& username, const std::string& password) : User(username, password) {
+    //Initialize the customer's bank account with an account ID and an initial balance
+    bankAccount = std::make_unique<BankAccount>(username, 0.0d);
 }
 
 // Get the bank account associated with the customer
@@ -35,6 +28,6 @@ bool Customer::withdraw(double amount) {
 
 // Print the customer's account summary (balance and transactions)
 void Customer::printAccountSummary() const {
-    bankAccount->printAccountSummary();  // Delegates to the BankAccount's print method
+    bankAccount->printAccountSummary();  //bankAccount's print method
 }
 

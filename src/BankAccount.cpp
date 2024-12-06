@@ -6,31 +6,36 @@
 #include <iostream>
 
 // Constructor to initialize a BankAccount with an accountID and an initial balance
-BankAccount::BankAccount(unsigned long accountID, double initialBalance)
-    : accountID(accountID), balance(initialBalance) {}
+BankAccount::BankAccount(const std::string& username, double initialBalance)
+    : username(username), balance(initialBalance) {}
+
+BankAccount getAccount(const std::string& username)
+{
+    //return BankAccount;
+}
 
 // Deposit method: Adds the specified amount to the balance
 bool BankAccount::deposit(double amount) {
-    if (amount > 0) {  // Only deposit if the amount is positive
+    if (amount > 0) { 
         balance += amount;
-        transactions.push_back(Transaction("Deposit", amount));  // Log the deposit transaction
+        transactions.push_back(Transaction("Deposit: ", amount));  // Log the deposit transaction
         return true;
     }
-    return false;  // Return false if deposit amount is invalid
+    return false; 
 }
 
 // Withdraw method: Deducts the specified amount from the balance
 bool BankAccount::withdraw(double amount) {
-    if (amount > 0 && balance >= amount) {  // Ensure sufficient funds
+    if (amount > 0 && balance >= amount) {  // Ensure sufficient funds in the account
         balance -= amount;
-        transactions.push_back(Transaction("Withdrawal", amount));  // Log the withdrawal transaction
+        transactions.push_back(Transaction("Withdrawal: ", amount));  // Log the withdrawal transaction
         return true;
     }
     std::cout << "Insufficient funds!" << std::endl;  // Notify if funds are insufficient
-    return false;  // Return false if withdrawal failed
+    return false;  
 }
 
-// Print method: Displays the account balance and all transactions
+//Displays the account balance and all transactions
 void BankAccount::printAccountSummary() const {
     std::cout << "Account ID: " << accountID << "\nBalance: $" << balance << std::endl;
     std::cout << "Transactions:" << std::endl;
