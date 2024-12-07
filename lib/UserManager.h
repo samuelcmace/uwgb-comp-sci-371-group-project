@@ -33,11 +33,7 @@ public:
 
     User* getUserByUsername(const std::string& username);
 
-<<<<<<< Updated upstream
     User* createUser(const std::string& createUser, const std::string& password, const std::string& user_type);
-=======
-    User *&& createUser(const std::string & string, const std::string & password, const std::string & user_type);
->>>>>>> Stashed changes
 
     // Load users from the CSV file
     void loadUsersFromCSV();

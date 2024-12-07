@@ -59,32 +59,17 @@ User* UserManager::getUserByUsername(const std::string& username) {
 
 // Load users from the CSV file
 void UserManager::loadUsersFromCSV() {
-<<<<<<< Updated upstream
-    //this method should query the CSV file and create User objects
-    for (int i = 1; i < this->getRowCount(); ++i) {  //     Skip header row
-        auto row = this->readRow(i);
-=======
     // This method should query the CSV file and create User objects
     // Example: users.push_back(new Customer(username, password));  // Assuming a Customer class exists
     for (int i = 1; i < csvObject->getRowCount(); ++i) {  // Skip header row
         auto row = csvObject->readRow(i);
->>>>>>> Stashed changes
         if (row.size() < 3) {  // Assuming the third column is userType
             std::cerr << "Warning: Skipping malformed row in CSV file.\n";
             continue;
         }
         const std::string& username = row[0];
         const std::string& password = row[1];
-<<<<<<< Updated upstream
-        const User::Type& userType;
-        if(row[2] == "0") {
-            userType = User::Type::CUSTOMER;
-        } else if(row[2] == "1") {
-            userType = User::Type::EMPLOYEE;
-        }
-=======
         const std::string& userType = row[2];
->>>>>>> Stashed changes
         users.push_back(createUser(username, password, userType));
     }
 }

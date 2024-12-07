@@ -6,39 +6,39 @@
 #define BANKACCOUNT_H
 
 #include <vector>
-#include "Transaction.h"  //from out Transaction class
+#include "Transaction.h"
+#include "User.h"
 
 class BankAccount {
 private:
-    std::string username;     // User's username
-    double balance;           //account balance
-    std::vector<Transaction> transactions;  //list of transactions
+    unsigned long username;  // User's unique ID
+    double balance;          // Account balance
+    std::vector<Transaction> transactions;  // List of transactions
 
 public:
-    //constructor to initialize BankAccount with accountID and initial balance
+    // Constructor
     BankAccount(unsigned long username, double initialBalance);
 
-    //
-    //User* getUserByUsername(const std::string& username);
-
-    // Method to deposit money into the account
+    // Deposit and withdraw methods
     bool deposit(double amount);
-
-    // Method to withdraw money from the account
     bool withdraw(double amount);
 
-    // Method to print the account summary (balance and transactions)
+    // Print account summary
     void printAccountSummary() const;
 
-    // Getter for account ID
+    // Getters
     unsigned long getAccountID() const;
-
-    // Getter for current balance
     double getBalance() const;
-
-    // Getter for the list of transactions
     const std::vector<Transaction>& getTransactions() const;
+
+    // Static method to fetch a BankAccount by username
+    static BankAccount* getAccountByUsername(
+        unsigned long username, 
+        const std::vector<BankAccount>& accounts);
+
+    // Additional utility methods could be added here
 };
 
 #endif // BANKACCOUNT_H
+
 
