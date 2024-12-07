@@ -131,9 +131,11 @@ int main(int argc, char* argv[])
                 continue;
             }
             managerInput = 0;
-            while (managerInput != -1)
+            while (managerInput != 4)
             {
+                managerInput = 0;
                 cout << "Manager Options:\n1. Create Account\n2. Delete Account\n3. Edit Balance\n4. Logout\n";
+                cin >> managerInput;
                 if (managerInput == 1)
                 {
                     //Create Account
