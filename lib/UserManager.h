@@ -6,37 +6,32 @@
 #define USERMANAGER_H
 
 #include <vector>
+#include "CSVObject.h"
 #include "User.h"
-#include "CSVObject.h"  // For interaction with CSV files
 
-class UserManager final : public CSVObject {
+class UserManager {
 private:
-    std::vector<User*> users;  // List of all users
-    UserManager();
+    static int activeAccounts;       // Tracks the number of active accounts
+    CSVObject usersCSV;              // Handles operations on users.txt
+    std::vector<User> users;         // In-memory storage for user data
 
 public:
-    UserManager& getInstance() {
-        static UserManager instance;
-        return instance;
-    }
-    // Prevent the instance from being accidentally copied or assigned (using the assignment operator)
-    // by explicitly setting these methods to delete.
-    UserManager& operator=(const UserManager&) = delete;
-    UserManager(const UserManager&) = delete;
+    // Constructor
+    UserManager(const std::string& filePath);
 
-    // Destructor to clean up dynamically allocated User objects
-    ~UserManager();
+    // Methods to manage users
+    void createUser(const std::string& username, const std::string& password, const std::string& accountID, double balance);
+    void deleteUser(const std::string& accountID);
+    void loadUsersFromFile();
 
-    void addUser(User* user);
+    // Login functionality
+    bool login(const std::string& username, const std::string& password);
 
-    bool authenticateUser(const std::string& username, const std::string& enteredPassword);
+    // Update balance
+    void updateBalance(const std::string& accountID, double newBalance);
 
-    User* getUserByUsername(const std::string& username);
-
-    User* createUser(const std::string& createUser, const std::string& password, const std::string& user_type);
-
-    // Load users from the CSV file
-    void loadUsersFromCSV();
+    // Static method to get the number of active accounts
+    static int getActiveAccounts();
 };
 
 #endif // USERMANAGER_H

@@ -6,31 +6,24 @@
 #define TRANSACTION_H
 
 #include <string>
-#include <ctime>  // For date handling
+#include <ctime>
 
 class Transaction {
 private:
-     // Type of withdraw which is either Deposit and Withdrawal
-    double amount;          
-    std::string date;         // Date of the transaction
+    std::string type; // "Deposit" or "Withdrawal"
+    double amount;
+    std::time_t timestamp; // Time of transaction
 
 public:
-    // Constructor to initialize
+    // Constructor
     Transaction(const std::string& type, double amount);
 
-    // Getter for Deposit and Withdrawal
+    // Getters
     std::string getType() const;
-
-    // Getter for the amount
     double getAmount() const;
-
-    // Getter for the date
-    std::string getDate() const;
-
-    // Helper function to get the current date as a string
-    static std::string getCurrentDate();
-
+    std::string getTimestamp() const; // Format the timestamp as a string
 };
 
 #endif // TRANSACTION_H
+
 

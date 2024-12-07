@@ -4,16 +4,32 @@
 
 #include "User.h"
 
-// Constructor to initialize user with username and password
-User::User(const std::string& username, const std::string& password)
-    : username(username), password(password) {}
+// Constructor
+User::User(std::string username, std::string password, std::string accountNumber, std::string accountType, double balance)
+    : username(username), password(password), accountNumber(accountNumber), accountType(accountType), balance(balance) {}
 
-//Getter function for username
+// Getters
 std::string User::getUsername() const {
     return username;
 }
-
-//Getter function for password
 std::string User::getPassword() const {
     return password;
 }
+std::string User::getAccountNumber() const {
+    return accountNumber;
+}
+std::string User::getAccountType() const {
+    return accountType;
+}
+double User::getBalance() const {
+    return balance;
+}
+
+// Setters
+void User::setAccountType(const std::string& newAccountType) {
+    accountType = newAccountType;
+}
+void User::setBalance(double newBalance) {
+    balance = newBalance;
+}
+

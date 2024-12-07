@@ -4,64 +4,67 @@
 
 #include "BankAccount.h"
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 
-BankAccount::BankAccount(unsigned long username, double initialBalance)
-    : username(username), balance(initialBalance) {}
+// Constructor: Links a User object to the account
+BankAccount::BankAccount(User* user) : user(user) {}
 
-// Deposit method
-bool BankAccount::deposit(double amount) {
-    if (amount > 0) {
-        balance += amount;
-        transactions.push_back(Transaction("Deposit", amount));
-        return true;
+// Deposit money
+void BankAccount::deposit(double amount) {
+    if (amount <= 0) {
+        std::cout << "Deposit amount must be greater than zero.\n";
+        return;
     }
-    return false;
+
+    double newBalance = user->getBalance() + amount;
+    user->setBalance(newBalance);
+
+    // Log the transaction as an object
+    transactionHistory.emplace_back("Deposit", amount);
+
+    std::cout << "Deposit successful! New balance: $" << newBalance << "\n";
 }
 
-// Withdraw method
-bool BankAccount::withdraw(double amount) {
-    if (amount > 0 && balance >= amount) {
-        balance -= amount;
-        transactions.push_back(Transaction("Withdrawal", amount));
-        return true;
+// Withdraw money
+void BankAccount::withdraw(double amount) {
+    if (amount <= 0) {
+        std::cout << "Withdrawal amount must be greater than zero.\n";
+        return;
     }
-    std::cout << "Insufficient funds!" << std::endl;
-    return false;
-}
 
-// Print account summary
-void BankAccount::printAccountSummary() const {
-    std::cout << "Account ID: " << username << "\nBalance: $" << balance << std::endl;
-    for (const auto& txn : transactions) {
-        std::cout << txn.getDate() << " | " << txn.getType() << ": $" << txn.getAmount() << std::endl;
+    double currentBalance = user->getBalance();
+    if (amount > currentBalance) {
+        std::cout << "Insufficient funds. Current balance: $" << currentBalance << "\n";
+        return;
     }
+
+    // Update the user's balance
+    double newBalance = currentBalance - amount;
+    user->setBalance(newBalance);
+
+    // Log the transaction
+    std::ostringstream transaction;
+    transaction << "Withdrawal: $" << std::fixed << std::setprecision(2) << amount;
+    transactionHistory.push_back(transaction.str());
+
+    std::cout << "Withdrawal successful! New balance: $" << newBalance << "\n";
 }
 
-// Getter for account ID
-unsigned long BankAccount::getAccountID() const {
-    return username;
-}
+std::string BankAccount::printAccountSummary() const {
+    std::ostringstream summary;
+    summary << "Account Summary for: " << user->getUsername() << "\n";
+    summary << "Account Number: " << user->getAccountNumber() << "\n";
+    summary << "Current Balance: $" << std::fixed << std::setprecision(2) << user->getBalance() << "\n";
+    summary << "Transaction History:\n";
 
-// Getter for balance
-double BankAccount::getBalance() const {
-    return balance;
-}
-
-// Getter for transactions
-const std::vector<Transaction>& BankAccount::getTransactions() const {
-    return transactions;
-}
-
-// Fetch account by username
-BankAccount* BankAccount::getAccountByUsername(
-    unsigned long username, 
-    const std::vector<BankAccount>& accounts) {
-    for (auto& account : accounts) {
-        if (account.getAccountID() == username) {
-            return &account;
-        }
+    for (const auto& transaction : transactionHistory) {
+        summary << "  - " << transaction.getType() << ": $"
+                << std::fixed << std::setprecision(2) << transaction.getAmount()
+                << " on " << transaction.getTimestamp() << "\n";
     }
-    return nullptr;  // this will return nullptr if not found
+    return summary.str();
 }
+
 
 

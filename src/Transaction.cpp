@@ -3,37 +3,26 @@
 //
 
 #include "Transaction.h"
-#include <sstream>
 #include <iomanip>
+#include <sstream>
 
-// Constructor to initialize the transaction with a type, amount, and current date
+// Constructor
 Transaction::Transaction(const std::string& type, double amount)
-    : type(type), amount(amount), date(getCurrentDate()) {}
+    : type(type), amount(amount), timestamp(std::time(nullptr)) {}
 
-// Getter for the transaction type (Deposit, Withdrawal, etc.)
+// Getters
 std::string Transaction::getType() const {
-    return this->amount > 0 ? "Deposit" : "Withdrawal";
+    return type;
 }
 
-// Getter for the transaction amount
 double Transaction::getAmount() const {
     return amount;
 }
 
-// Getter for the transaction date
-std::string Transaction::getDate() const {
-    return date;
-}
-
-// Helper function to get the current date in YYYY-MM-DD format
-std::string Transaction::getCurrentDate() {
-    // Get the current date and time
-    std::time_t now = std::time(0);
-    std::tm* localTime = std::localtime(&now);
-
-    // Format the date as YYYY-MM-DD
-    std::ostringstream dateStream;
-    dateStream << std::put_time(localTime, "%Y-%m-%d");
-    return dateStream.str();
+std::string Transaction::getTimestamp() const {
+    std::ostringstream formattedTime;
+    std::tm* localTime = std::localtime(&timestamp);
+    formattedTime << std::put_time(localTime, "%Y-%m-%d %H:%M:%S");
+    return formattedTime.str();
 }
 

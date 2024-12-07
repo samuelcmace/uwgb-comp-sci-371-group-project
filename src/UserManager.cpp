@@ -9,67 +9,106 @@
 #include "User.h"
 #include "Employee.h"
 
-// Constructor to initialize UserManager with a CSVObject (for file interaction)
-UserManager::UserManager() : CSVObject("user.csv",std::vector<std::string>{"username","password"}) {
-    loadUsersFromCSV();  // Load users from the CSV file on initialization
+// Initialize static member
+int UserManager::activeAccounts = 0;
+
+// Constructor: Initializes the UserManager with the CSV file
+UserManager::UserManager(const std::string& filePath)
+    : usersCSV(filePath, {"AccountID", "Username", "Password", "Balance"}) {
+    loadUsersFromFile();
 }
 
-//destructor to clean up dynamically allocated users
-UserManager::~UserManager() {
-    for (auto user : users) {
-        delete user;  //deallocate memory for each user
-    }
-}
-
-// Add a new user to the list and save to the CSV file
-void UserManager::addUser(User* user) {
-    users.push_back(user);  // Add the new user to the internal list
-    this->createRow({user->getUsername(), user->getPassword()});  // Save user data to CSV
-}
-
-// Authenticate a user by checking their username and password
-bool UserManager::authenticateUser(const std::string& username, const std::string& enteredPassword) {
-    for (auto user : users) {
-        if (user->getUsername() == username && user->getPassword() == enteredPassword) {
-            return true;  //Authentication successful
+// Create a new user
+void UserManager::createUser(const std::string& username, const std::string& password, const std::string& accountID, double balance) {
+    // Check for duplicate accountID
+    for (const auto& user : users) {
+        if (user.getAccountNumber() == accountID) {
+            std::cout << "Error: Account ID already exists.\n";
+            return;
         }
     }
-    return false;  //Authentication failed
+
+    // Add user to memory and CSV
+    User newUser(username, password, accountID, balance);
+    users.push_back(newUser);
+    usersCSV.createRow({accountID, username, password, std::to_string(balance)});
+
+    // Increment active accounts
+    activeAccounts++;
+    std::cout << "User created successfully.\n";
 }
 
-User* UserManager::createUser(const std::string& username, const std::string& password, const User::Type& user_type){
-    User* newUser = nullptr;
-    if(user_type == User::Type::CUSTOMER) {
-        newUser = new Customer(username, password);
-    } else if(user_type == User::Type::EMPLOYEE) {
-        newUser = new Employee(username, password);
-    }
-    return newUser;
-}
+// Delete a user
+void UserManager::deleteUser(const std::string& accountID) {
+    for (size_t i = 0; i < users.size(); ++i) {
+        if (users[i].getAccountNumber() == accountID) {
+            users.erase(users.begin() + i); // Remove user from memory
 
-// Get a user by their username
-User* UserManager::getUserByUsername(const std::string& username) {
-    for (auto user : users) {
-        if (user->getUsername() == username) {
-            return user;  // Return the user if found
+            // Remove from CSV
+            int userIndex = usersCSV.queryRowNumber("AccountID", accountID);
+            if (userIndex != -1) {
+                usersCSV.deleteRow(userIndex);
+            }
+
+            // Decrement active accounts
+            activeAccounts--;
+            std::cout << "User deleted successfully.\n";
+            return;
         }
     }
-    return nullptr;  // Return nullptr if user not found
+    std::cout << "Error: Account not found.\n";
 }
 
-// Load users from the CSV file
-void UserManager::loadUsersFromCSV() {
-    // This method should query the CSV file and create User objects
-    // Example: users.push_back(new Customer(username, password));  // Assuming a Customer class exists
-    for (int i = 1; i < csvObject->getRowCount(); ++i) {  // Skip header row
-        auto row = csvObject->readRow(i);
-        if (row.size() < 3) {  // Assuming the third column is userType
-            std::cerr << "Warning: Skipping malformed row in CSV file.\n";
+// Load users from the file into memory
+void UserManager::loadUsersFromFile() {
+    for (int i = 1; i < usersCSV.getRowCount(); ++i) { // Skip header row
+        auto row = usersCSV.readRow(i);
+        if (row.size() < 4) {
+            std::cerr << "Warning: Malformed row in users.txt\n";
             continue;
         }
-        const std::string& username = row[0];
-        const std::string& password = row[1];
-        const std::string& userType = row[2];
-        users.push_back(createUser(username, password, userType));
+
+        User user(row[1], row[2], row[0], std::stod(row[3])); // Username, Password, AccountID, Balance
+        users.push_back(user);
     }
+    activeAccounts = users.size();
+    std::cout << "Loaded " << activeAccounts << " users from file.\n";
+}
+
+// Handle user login
+bool UserManager::login(const std::string& username, const std::string& password) {
+    for (const auto& user : users) {
+        if (user.getUsername() == username && user.getPassword() == password) {
+            std::cout << "Login successful for user: " << username << "\n";
+            return true;
+        }
+    }
+    std::cout << "Error: Invalid username or password.\n";
+    return false;
+}
+
+// Update user balance
+void UserManager::updateBalance(const std::string& accountID, double newBalance) {
+    for (size_t i = 0; i < users.size(); ++i) {
+        if (users[i].getAccountNumber() == accountID) {
+            users[i].setBalance(newBalance);
+
+            // Update the CSV file
+            int userIndex = usersCSV.queryRowNumber("AccountID", accountID);
+            if (userIndex != -1) {
+                auto row = usersCSV.readRow(userIndex);
+                row[3] = std::to_string(newBalance); // Update balance in CSV
+                usersCSV.updateRow(userIndex, row);
+            }
+
+            std::cout << "Balance updated successfully for account " << accountID << ".\n";
+            return;
+        }
+    }
+    std::cout << "Error: Account not found.\n";
+}
+
+// Get the number of active accounts
+int UserManager::getActiveAccounts() {
+    return activeAccounts;
 }

@@ -22,8 +22,7 @@ set(SOURCES
     src/BankAccount.cpp
     src/UserManager.cpp
     src/User.cpp
-    src/Customer.cpp
-    src/Employee.cpp
+    src/Manager.cpp
     src/Transaction.cpp
 )
 

@@ -8,25 +8,27 @@
 #include <string>
 
 class User {
-protected:
-    std::string username;  // User's username
-    std::string password;  // User's password
+private:
+    std::string username;
+    std::string password;
+    std::string accountNumber;
+    std::string accountType;
+    double balance;
 
 public:
-    // Constructor to initialize username and password
-    User(const std::string& username, const std::string& password);
+    // Constructor
+    User(std::string username, std::string password, std::string accountNumber, std::string accountType, double balance);
 
-    virtual ~User() = default;  // Virtual destructor for proper cleanup
-
-    // Getter functions for username and password
+    // Getters
     std::string getUsername() const;
     std::string getPassword() const;
+    std::string getAccountNumber() const;
+    std::string getAccountType() const;
+    double getBalance() const;
 
-    enum Type {
-        CUSTOMER,
-        EMPLOYEE
-    };
-
+    // Setters
+    void setAccountType(const std::string& newAccountType);
+    void setBalance(double newBalance);
 };
 
 #endif // USER_H
