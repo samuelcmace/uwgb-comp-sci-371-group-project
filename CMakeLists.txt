@@ -9,13 +9,14 @@ project(bank_application)
 # current directory.
 include_directories(lib)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(SOURCES
     src/CSVObject.cpp
-    src/BankAccount.cpp
-    src/UserManager.cpp
+    src/Bank.cpp
     src/User.cpp
     src/Manager.cpp
+    src/Customer.cpp
+    src/BankAccount.cpp
     src/Transaction.cpp
 )
 

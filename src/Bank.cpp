@@ -4,22 +4,29 @@
 
 #include <iostream>
 
-#include "UserManager.h"
-#include "Customer.h"
+#include "Bank.h"
 #include "User.h"
-#include "Employee.h"
 
 // Initialize static member
-int UserManager::activeAccounts = 0;
+int Bank::activeAccounts = 0;
 
-// Constructor: Initializes the UserManager with the CSV file
-UserManager::UserManager(const std::string& filePath)
-    : usersCSV(filePath, {"AccountID", "Username", "Password", "Balance"}) {
+// Constructor: Initializes the Bank with the CSV file
+Bank::Bank()
+    : CSVObject("users.csv", {"USERNAME","PASSWORD","TYPE"}) {
     loadUsersFromFile();
 }
 
+/**
+ * Manually delete all of the heap-allocated User objects.
+ */
+Bank::~Bank() {
+    for(User* user : this->users) {
+        delete user;
+    }
+}
+
 // Create a new user
-void UserManager::createUser(const std::string& username, const std::string& password, const std::string& accountID, double balance) {
+void Bank::createUser(const std::string& username, const std::string& password, const User::Type userType) {
     // Check for duplicate accountID
     for (const auto& user : users) {
         if (user.getAccountNumber() == accountID) {
@@ -31,7 +38,7 @@ void UserManager::createUser(const std::string& username, const std::string& pas
     // Add user to memory and CSV
     User newUser(username, password, accountID, balance);
     users.push_back(newUser);
-    usersCSV.createRow({accountID, username, password, std::to_string(balance)});
+    this->createRow({accountID, username, password, std::to_string(balance)});
 
     // Increment active accounts
     activeAccounts++;
@@ -39,15 +46,15 @@ void UserManager::createUser(const std::string& username, const std::string& pas
 }
 
 // Delete a user
-void UserManager::deleteUser(const std::string& accountID) {
+void Bank::deleteUser(const std::string& accountID) {
     for (size_t i = 0; i < users.size(); ++i) {
         if (users[i].getAccountNumber() == accountID) {
             users.erase(users.begin() + i); // Remove user from memory
 
             // Remove from CSV
-            int userIndex = usersCSV.queryRowNumber("AccountID", accountID);
+            int userIndex = this->queryRowNumber("AccountID", accountID);
             if (userIndex != -1) {
-                usersCSV.deleteRow(userIndex);
+                this->deleteRow(userIndex);
             }
 
             // Decrement active accounts
@@ -60,15 +67,15 @@ void UserManager::deleteUser(const std::string& accountID) {
 }
 
 // Load users from the file into memory
-void UserManager::loadUsersFromFile() {
-    for (int i = 1; i < usersCSV.getRowCount(); ++i) { // Skip header row
-        auto row = usersCSV.readRow(i);
+void Bank::loadUsersFromFile() {
+    for (int i = 1; i < this->getRowCount(); ++i) { // Skip header row
+        std::vector<std::string> row = this->readRow(i);
         if (row.size() < 4) {
             std::cerr << "Warning: Malformed row in users.txt\n";
             continue;
         }
 
-        User user(row[1], row[2], row[0], std::stod(row[3])); // Username, Password, AccountID, Balance
+        User* user = new User(row[1], row[2], row[0], std::stod(row[3])); // Username, Password, AccountID, Balance
         users.push_back(user);
     }
     activeAccounts = users.size();
@@ -76,9 +83,9 @@ void UserManager::loadUsersFromFile() {
 }
 
 // Handle user login
-bool UserManager::login(const std::string& username, const std::string& password) {
-    for (const auto& user : users) {
-        if (user.getUsername() == username && user.getPassword() == password) {
+bool Bank::login(const std::string& username, const std::string& password) {
+    for (User* user : users) {
+        if (user->getUsername() == username && user->getPassword() == password) {
             std::cout << "Login successful for user: " << username << "\n";
             return true;
         }
@@ -88,17 +95,17 @@ bool UserManager::login(const std::string& username, const std::string& password
 }
 
 // Update user balance
-void UserManager::updateBalance(const std::string& accountID, double newBalance) {
+void Bank::updateBalance(const std::string& accountID, double newBalance) {
     for (size_t i = 0; i < users.size(); ++i) {
         if (users[i].getAccountNumber() == accountID) {
             users[i].setBalance(newBalance);
 
             // Update the CSV file
-            int userIndex = usersCSV.queryRowNumber("AccountID", accountID);
+            int userIndex = this->queryRowNumber("AccountID", accountID);
             if (userIndex != -1) {
-                auto row = usersCSV.readRow(userIndex);
+                auto row = this->readRow(userIndex);
                 row[3] = std::to_string(newBalance); // Update balance in CSV
-                usersCSV.updateRow(userIndex, row);
+                this->updateRow(userIndex, row);
             }
 
             std::cout << "Balance updated successfully for account " << accountID << ".\n";
@@ -109,6 +116,6 @@ void UserManager::updateBalance(const std::string& accountID, double newBalance)
 }
 
 // Get the number of active accounts
-int UserManager::getActiveAccounts() {
+int Bank::getActiveAccounts() {
     return activeAccounts;
 }

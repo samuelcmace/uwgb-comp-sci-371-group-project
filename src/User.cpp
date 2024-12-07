@@ -5,31 +5,29 @@
 #include "User.h"
 
 // Constructor
-User::User(std::string username, std::string password, std::string accountNumber, std::string accountType, double balance)
-    : username(username), password(password), accountNumber(accountNumber), accountType(accountType), balance(balance) {}
+User::User(std::string username, std::string password) : username(username), password(password) {}
 
 // Getters
 std::string User::getUsername() const {
-    return username;
+    return this->username;
 }
+
 std::string User::getPassword() const {
-    return password;
-}
-std::string User::getAccountNumber() const {
-    return accountNumber;
-}
-std::string User::getAccountType() const {
-    return accountType;
-}
-double User::getBalance() const {
-    return balance;
+    return this->password;
 }
 
-// Setters
-void User::setAccountType(const std::string& newAccountType) {
-    accountType = newAccountType;
-}
-void User::setBalance(double newBalance) {
-    balance = newBalance;
+User::Type User::getTypeEnum(const std::string& type) {
+    if(type == "CUSTOMER") {
+        return User::Type::CUSTOMER;
+    } else if(type == "MANAGER") {
+        return User::Type::MANAGER;
+    }
 }
 
+std::string User::getTypeString(const User::Type& type) {
+    if(type == User::Type::CUSTOMER) {
+        return "CUSTOMER";
+    } else if(type == User::Type::MANAGER) {
+        return "MANAGER";
+    }
+}

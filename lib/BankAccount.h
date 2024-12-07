@@ -7,27 +7,28 @@
 
 #include <string>
 #include <vector>
+
 #include "User.h"
 #include "Transaction.h"
+#include "CSVObject.h"
 
-std::vector<Transaction> transactionHistory;
+class BankAccount : public CSVObject {
 
-
-class BankAccount {
 private:
-    User* user; // Pointer to the associated User object
-    std::vector<Transaction> transactionHistory;// History of transactions
+    std::vector<Transaction*> transactionHistory; // History of transactions
+    void loadTransactionsFromCSV();
 
 public:
-    // Constructor
-    BankAccount(User* user);
+
+    BankAccount(const std::string& accountName);
+    ~BankAccount();
 
     void deposit(double amount);
     void withdraw(double amount);
 
-    std::string printAccountSummary() const;
+    double getBalance() const;
+    std::string getTransactionList() const;
+
 };
 
 #endif // BANKACCOUNT_H
-
-

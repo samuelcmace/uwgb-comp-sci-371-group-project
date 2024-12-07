@@ -7,22 +7,23 @@
 
 #include <string>
 #include <vector>
+
 #include "CSVObject.h"
+#include "User.h"
 
-class Manager {
-private:
-    std::string name;
-    std::string password;
-
+class Manager : public User {
 public:
     // Constructor
     Manager(std::string name, std::string password);
 
     // Login validation
-    static bool login(const std::string& inputName, const std::string& inputPassword, const std::string& managersFilePath);
+    bool login(const std::string& inputName, const std::string& inputPassword);
 
     // View all user data
-    void viewAllUserData(const CSVObject& usersCSV) const;
+    void viewAllUserData() const;
+    void setBalance(double newBalance);
+    std::string getAccountType() const;
+
 };
 
 #endif // MANAGER_H

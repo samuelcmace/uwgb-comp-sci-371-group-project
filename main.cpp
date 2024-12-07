@@ -1,26 +1,26 @@
 #include <iostream>
 #include <string>
+#include <memory>
 
 #include "BankAccount.h"
 #include "User.h"
 #include "CSVObject.h"
-#include "Customer.h"
-#include "Employee.h"
 #include "Transaction.h"
-#include "UserManager.h"
+#include "Bank.h"
 
 using namespace std;
 
 int main(int argc, char* argv[])
 {
-    UserManager userManager = UserManager::getInstance();
+    // Bank is the instance of the singleton class.
+    Bank bankInstance = Bank::getInstance();
     //Main loop of the program
     //Initial input:
     double amount;
-    bool login;
+    bool isLoggedIn;
     int input;
     int managerInput;
-    User user1;
+    std::shared_ptr<User> currentUser;
     while (input != 4)
     {
         input = 0;
@@ -29,29 +29,29 @@ int main(int argc, char* argv[])
         if (input == 1)
         {
             std::string username, password;
-            login = false;
-            while (login == false)
+            isLoggedIn = false;
+            while (isLoggedIn == false)
             {
                 //User Login Selected
                 std::cout << "Enter Username: ";
                 std::cin >> username;
                 std::cout << "Enter Password: ";
                 std::cin >> password;
-                login = userManager.authenticateUser(username, password);
-                if (!login)
+                isLoggedIn = bankInstance.login(username, password);
+                if (!isLoggedIn)
                 {
                     std::cout << "Login failed." << std::endl;
                 }
             }
-            User user1 = userManager.getUserByUsername(username);
+            User currentUser = bankInstance.getUserByUsername(username);
             //check if manager/customer
-            if (type(user1) == EMPLOYEE)
+            if (Type(currentUser) == MANAGER)
             {
 
             }
-            user1 = userManager.getUserByUsername(username);
+            currentUser = bankInstance.getUserByUsername(username);
             //TODO: check if user is a manager/customer
-            //if (user1 is manager/employee) {
+            //if (currentUser is manager/employee) {
             // cout << "You are a manager. Login to the manager login.";
             // continue;
             //}
@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
                     amount = 0.0;
                     cout << "Amount for withdrawal: ";
                     cin >> amount;
-                    if (user1.withdraw(amount))
+                    if (currentUser.withdraw(amount))
                     {
                         cout << "Withdrawal Successful." << endl;
                     }
@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
                     amount = 0.0;
                     cout << "Amount for deposit: ";
                     cin >> amount;
-                    if (user1.deposit(amount))
+                    if (currentUser.deposit(amount))
                     {
                         cout << "Deposit Successful." << endl;
                     }
@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
                 else if (userOptions == 3)
                 {
                     //Print Account Summary
-                    user1.printAccountSummary();
+                    currentUser.printAccountSummary();
                 }
                 else
                 {
@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
             cin >> usernam;
             cout << "Enter Password: ";
             cin >> passwor;
-            userManager.createUser(usernam, passwor, CUSTOMER);
+            bankInstance.createUser(usernam, passwor, CUSTOMER);
             cout << "Account successfully created." << endl;
         }
         else if (input == 3)
@@ -122,9 +122,9 @@ int main(int argc, char* argv[])
             cin >> userN;
             cout << "Enter Password: ";
             cin >> passW;
-            if (userManager.authenticateUser(userN, passW))
+            if (bankInstance.authenticateUser(userN, passW))
             {
-                user1 = userManager.getUserByUsername(userN);
+                currentUser = bankInstance.getUserByUsername(userN);
             }
             else
             {
@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
                     cin >> userna;
                     cout << "Enter Password: ";
                     cin >> passwo;
-                    userManager.createUser(userna, passwo, CUSTOMER);
+                    bankInstance.createUser(userna, passwo, CUSTOMER);
                     cout << "Account successfully created." << endl;
                 }
                 else if (managerInput == 2)
@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
                     string enteredUsername;
                     cout << "Enter username of account to be deleted:";
                     cin >> enteredUsername;
-                    //TODO: delete method of UserManager
+                    //TODO: delete method of bankInstance
                 }
                 else if (managerInput == 3)
                 {
@@ -173,6 +173,7 @@ int main(int argc, char* argv[])
         }
     }
     std::cout << "\nExiting Program...";
+    delete currentUser;
 
     return 0;
 

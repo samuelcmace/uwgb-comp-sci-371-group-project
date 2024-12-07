@@ -8,28 +8,28 @@
 #include <string>
 
 class User {
-private:
+protected:
     std::string username;
     std::string password;
-    std::string accountNumber;
-    std::string accountType;
-    double balance;
 
 public:
     // Constructor
-    User(std::string username, std::string password, std::string accountNumber, std::string accountType, double balance);
+    User(std::string username, std::string password);
+    virtual ~User() {}
 
     // Getters
     std::string getUsername() const;
     std::string getPassword() const;
-    std::string getAccountNumber() const;
-    std::string getAccountType() const;
-    double getBalance() const;
+    virtual std::string getAccountType() const = 0;
 
-    // Setters
-    void setAccountType(const std::string& newAccountType);
-    void setBalance(double newBalance);
+    // Enum to Represent the User Type (Manager or Customer)
+    enum Type {
+        CUSTOMER,
+        MANAGER
+    };
+    static User::Type getTypeEnum(const std::string& type);
+    static std::string getTypeString(const User::Type& type);
+
 };
 
 #endif // USER_H
-
