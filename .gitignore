@@ -1,3 +1,7 @@
+# Visual Studio Code and Visual Studio Project
+.vs/
+.vscode/
+
 # Build Directory
 build/
 cmake-build-debug/
