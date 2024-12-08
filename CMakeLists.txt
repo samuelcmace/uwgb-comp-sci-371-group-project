@@ -9,21 +9,15 @@ project(bank_application)
 # current directory.
 include_directories(lib)
 
-# Require C++17 for building this project.
 set(CMAKE_CXX_STANDARD 17)
-
-# Enable unit testing for the CMake project.
-enable_testing()
-
-# Create a variable called SOURCES that contains all of the .cpp files (other than ones with a main function) that will
-# need to be linked to all executables.
 set(SOURCES
-    src/CSVObject.cpp
-    src/BankAccount.cpp
-    src/UserManager.cpp
-    src/User.cpp
-    src/Manager.cpp
-    src/Transaction.cpp
+        src/CSVObject.cpp
+        src/Bank.cpp
+        src/User.cpp
+        src/Manager.cpp
+        src/Customer.cpp
+        src/BankAccount.cpp
+        src/Transaction.cpp
 )
 
 # Copy the assets directory from the source directory into whatever the output (or build) directory happens to be...

@@ -4,32 +4,39 @@
 
 #include "User.h"
 
+#include <Transaction.h>
+
 // Constructor
-User::User(std::string username, std::string password, std::string accountNumber, std::string accountType, double balance)
-    : username(username), password(password), accountNumber(accountNumber), accountType(accountType), balance(balance) {}
+User::User(const std::string &username, const std::string &password) : username(username), password(password) {
+};
+
+User::~User() = default;
 
 // Getters
 std::string User::getUsername() const {
-    return username;
+    return this->username;
 }
+
 std::string User::getPassword() const {
-    return password;
-}
-std::string User::getAccountNumber() const {
-    return accountNumber;
-}
-std::string User::getAccountType() const {
-    return accountType;
-}
-double User::getBalance() const {
-    return balance;
+    return this->password;
 }
 
-// Setters
-void User::setAccountType(const std::string& newAccountType) {
-    accountType = newAccountType;
-}
-void User::setBalance(double newBalance) {
-    balance = newBalance;
+bool User::authenticate(const std::string &username, const std::string &password) const {
+    return this->username == username && this->password == password;
 }
 
+User::Type User::getTypeEnum(const std::string &type) {
+    if (type == "CUSTOMER") {
+        return CUSTOMER;
+    } else if (type == "MANAGER") {
+        return MANAGER;
+    }
+}
+
+std::string User::getTypeString(const Type &type) {
+    if (type == CUSTOMER) {
+        return "CUSTOMER";
+    } else if (type == MANAGER) {
+        return "MANAGER";
+    }
+}

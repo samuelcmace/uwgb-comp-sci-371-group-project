@@ -9,21 +9,42 @@
 #include <ctime>
 
 class Transaction {
+public:
+    enum Type {
+        DEPOSIT,
+        WITHDRAWAL
+    };
+
 private:
-    std::string type; // "Deposit" or "Withdrawal"
+    Type type; // "Deposit" or "Withdrawal"
     double amount;
     std::time_t timestamp; // Time of transaction
 
 public:
     // Constructor
-    Transaction(const std::string& type, double amount);
+    Transaction(const Type &type, double amount, std::time_t timestamp);
+
+    Transaction(const Type &type, double amount, std::string timestamp);
+
+    Transaction(const Type &type, double amount);
 
     // Getters
-    std::string getType() const;
+    Type getType() const;
+
     double getAmount() const;
-    std::string getTimestamp() const; // Format the timestamp as a string
+
+    std::string getTimestamp() const;
+
+    std::time_t getTimestampRaw() const;
+
+    // Static methods that don't deal with class variables. They just change the representation
+    static std::string convertTimestampToString(const std::time_t &timestamp);
+
+    static std::time_t convertStringToTimestamp(const std::string &timestamp);
+
+    static std::string getTypeString(const Transaction::Type &type);
+
+    static Type getTypeEnum(const std::string &type);
 };
 
 #endif // TRANSACTION_H
-
-
