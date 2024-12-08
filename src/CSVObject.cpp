@@ -10,7 +10,6 @@
  * @param filePath The directory on the filesystem where the CSV file will be located.
  */
 CSVObject::CSVObject(std::string filePath, std::vector<std::string> columnNames) {
-
     this->filePath = filePath;
 
     // Use the C++17 std::filesystem namespace to check whether the file exists on the system first...
@@ -33,7 +32,6 @@ CSVObject::CSVObject(std::string filePath, std::vector<std::string> columnNames)
             throw std::runtime_error("Error: The specified column names do not match! Aborting...");
         }
     }
-
 }
 
 /**
@@ -50,11 +48,10 @@ CSVObject::~CSVObject() = default;
 void CSVObject::readFile() {
     std::ifstream inputFile(filePath);
 
-    if(inputFile.is_open()) {
+    if (inputFile.is_open()) {
         std::string line;
         int lineNumber = 0;
-        while(std::getline(inputFile, line)) {
-
+        while (std::getline(inputFile, line)) {
             // Store the indexes of the commas as a queue data structure so that we can easily pop them when we are
             // ready to read the line.
             std::vector<int> commaIndices;
@@ -95,13 +92,12 @@ void CSVObject::writeFile() const {
     // Create a new output file with the truncation mode for overwriting the file as it currently exists.
     std::ofstream outputFile(filePath, std::ofstream::trunc);
 
-    if(outputFile.is_open()) {
-
+    if (outputFile.is_open()) {
         for (int i = 0; i < this->getRowCount(); i++) {
             std::string row;
-            for(int j = 0; j < this->getColCount(); j++) {
+            for (int j = 0; j < this->getColCount(); j++) {
                 row += this->data[i][j];
-                if(j < this->getColCount() - 1) {
+                if (j < this->getColCount() - 1) {
                     row += ",";
                 }
             }
@@ -109,7 +105,6 @@ void CSVObject::writeFile() const {
         }
 
         outputFile.close();
-
     }
 }
 
@@ -141,24 +136,24 @@ int CSVObject::getColCount() const {
  *         the startingRowIndex.
  */
 int CSVObject::queryRowNumber(std::string colKey, std::string colValue, int startingRowIndex) const {
-
     // Determine the column mapping using the provided column key colKey...
     int colIndex = -1;
-    for(int i = 0; i < this->data[0].size(); i++) {
-        if(this->data[0][i] == colKey) {
+    for (int i = 0; i < this->data[0].size(); i++) {
+        if (this->data[0][i] == colKey) {
             colIndex = i;
             break;
         }
     }
 
-    if(colIndex == -1) {
-        throw std::runtime_error("Error: The requested column '" + colKey + "' was not found in the file '" + filePath + "'. Aborting!");
+    if (colIndex == -1) {
+        throw std::runtime_error(
+            "Error: The requested column '" + colKey + "' was not found in the file '" + filePath + "'. Aborting!");
     }
 
     // Query the row index where the specified object is...
     int rowIndex = -1;
-    for(int i = startingRowIndex; i < this->data.size(); i++) {
-        if(this->data[i][colIndex] == colValue) {
+    for (int i = startingRowIndex; i < this->data.size(); i++) {
+        if (this->data[i][colIndex] == colValue) {
             rowIndex = i;
             break;
         }
@@ -166,7 +161,6 @@ int CSVObject::queryRowNumber(std::string colKey, std::string colValue, int star
 
     // If the requested data was not found, the function will return -1. Otherwise, it will return the corresponding row index.
     return rowIndex;
-
 }
 
 /**
@@ -217,9 +211,8 @@ void CSVObject::deleteRow(int lineNumber) {
  * Method to print out the CSVObject as comma-separated entries using std::cout.
  */
 void CSVObject::print() const {
-
-    for(int i = 0; i < this->getRowCount(); i++) {
-        for(int j = 0; j < this->getColCount(); j++) {
+    for (int i = 0; i < this->getRowCount(); i++) {
+        for (int j = 0; j < this->getColCount(); j++) {
             std::cout << this->data[i][j];
             if (j < this->getColCount() - 1) {
                 std::cout << ",";
@@ -227,5 +220,4 @@ void CSVObject::print() const {
         }
         std::cout << std::endl;
     }
-
 }

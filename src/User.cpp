@@ -4,8 +4,13 @@
 
 #include "User.h"
 
+#include <Transaction.h>
+
 // Constructor
-User::User(std::string username, std::string password) : username(username), password(password) {}
+User::User(const std::string &username, const std::string &password) : username(username), password(password) {
+};
+
+User::~User() = default;
 
 // Getters
 std::string User::getUsername() const {
@@ -16,18 +21,22 @@ std::string User::getPassword() const {
     return this->password;
 }
 
-User::Type User::getTypeEnum(const std::string& type) {
-    if(type == "CUSTOMER") {
-        return User::Type::CUSTOMER;
-    } else if(type == "MANAGER") {
-        return User::Type::MANAGER;
+bool User::authenticate(const std::string &username, const std::string &password) const {
+    return this->username == username && this->password == password;
+}
+
+User::Type User::getTypeEnum(const std::string &type) {
+    if (type == "CUSTOMER") {
+        return CUSTOMER;
+    } else if (type == "MANAGER") {
+        return MANAGER;
     }
 }
 
-std::string User::getTypeString(const User::Type& type) {
-    if(type == User::Type::CUSTOMER) {
+std::string User::getTypeString(const Type &type) {
+    if (type == CUSTOMER) {
         return "CUSTOMER";
-    } else if(type == User::Type::MANAGER) {
+    } else if (type == MANAGER) {
         return "MANAGER";
     }
 }

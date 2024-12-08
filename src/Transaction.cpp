@@ -6,20 +6,22 @@
 #include <iomanip>
 #include <sstream>
 
+#include <string>
+
 // Constructor overloads for Transaction, one of which takes in a timestamp as a string
-// and converts it to a time_t object automatically, while the other one just assignes the value
+// and converts it to a time_t object automatically, while the other one just assigns the value
 // to the instance variable directly.
-Transaction::Transaction(const Transaction::Type& type, double amount, std::string timestamp)
+Transaction::Transaction(const Type& type, double amount, std::string timestamp)
     : type(type), amount(amount) {
-    this->timestamp = Transaction::convertStringToTimestamp(timestamp);
+    this->timestamp = convertStringToTimestamp(timestamp);
 }
 
-Transaction::Transaction(const Transaction::Type& type, double amount, std::time_t timestamp)
+Transaction::Transaction(const Type& type, double amount, std::time_t timestamp)
     : type(type), amount(amount), timestamp(timestamp) {
 
 }
 
-Transaction::Transaction(const Transaction::Type& type, double amount) : type(type), amount(amount), timestamp(std::time(nullptr)) {
+Transaction::Transaction(const Type& type, double amount) : type(type), amount(amount), timestamp(std::time(nullptr)) {
 
 }
 
@@ -33,7 +35,7 @@ double Transaction::getAmount() const {
 }
 
 std::string Transaction::getTimestamp() const {
-    return Transaction::convertTimestampToString(this->timestamp);
+    return convertTimestampToString(this->timestamp);
 }
 
 std::time_t Transaction::getTimestampRaw() const {
@@ -41,34 +43,38 @@ std::time_t Transaction::getTimestampRaw() const {
 }
 
 std::string Transaction::convertTimestampToString(const std::time_t& timestamp) {
-    std::ostringstream formattedTime;
     std::tm* localTime = std::localtime(&timestamp);
+    std::ostringstream formattedTime;
     formattedTime << std::put_time(localTime, "%Y-%m-%d %H:%M:%S");
     return formattedTime.str();
 }
 
 std::time_t Transaction::convertStringToTimestamp(const std::string& timestamp) {
-    std::istringstream formattedTime(timestamp);
-    std::tm* time = {};
-    formattedTime >> std::get_time(&time, "%Y-%m-%d %H:%M:%S");
-    if(formattedTime.fail()) {
+    struct std::tm time = {};
+    std::istringstream ss(timestamp);
+    ss >> std::get_time(&time, "%Y-%m-%d %H:%M:%S");
+    if(ss.fail()) {
         throw std::invalid_argument("Invalid timestamp format! Please try again!");
     }
-    return std::mktime(time);
+    return std::mktime(&time);
 }
 
 Transaction::Type Transaction::getTypeEnum(const std::string& type) {
     if(type == "DEPOSIT") {
-        return Transaction::Type::DEPOSIT;
+        return DEPOSIT;
     } else if(type == "WITHDRAWAL") {
-        return Transaction::Type::WITHDRAWAL;
+        return WITHDRAWAL;
+    } else {
+        throw std::invalid_argument("Unknown transaction type!");
     }
 }
 
-std::string Transaction::getTypeString(const Transaction::Type& type) {
-    if(type == Transaction::Type::DEPOSIT) {
+std::string Transaction::getTypeString(const Type& type) {
+    if(type == DEPOSIT) {
         return "DEPOSIT";
-    } else if(type == Transaction::Type::WITHDRAWAL) {
+    } else if(type == WITHDRAWAL) {
         return "WITHDRAWAL";
+    } else {
+        throw std::invalid_argument("Unknown transaction type!");
     }
 }

@@ -1,7 +1,7 @@
 #include "Customer.h"
 
-Customer::Customer() : User() {
-    this->customerAccount = new Account();
+Customer::Customer(const std::string &username, const std::string &password) : User(username, password) {
+    this->customerAccount = new BankAccount(this->username);
 }
 
 Customer::~Customer() {
@@ -9,18 +9,27 @@ Customer::~Customer() {
 }
 
 User::Type Customer::getAccountType() const {
-    return User::Type::CUSTOMER;
+    return CUSTOMER;
 }
 
-double getBalance() const {
+double Customer::getBalance() const {
     return this->customerAccount->getBalance();
 }
 
-std::string printAccountSummary() const {
+bool Customer::deposit(double amount) {
+    return this->customerAccount->deposit(amount);
+}
+
+bool Customer::withdrawal(double amount) {
+    return this->customerAccount->deposit(amount);
+}
+
+std::string Customer::printAccountSummary() const {
     std::ostringstream summary;
     summary << "Account Summary for: " << this->getUsername() << "\n";
-    summary << "Current Balance: $" << std::fixed << std::setprecision(2) << this->account->getBalance() << "\n";
+    summary << "Current Balance: $" << std::fixed << std::setprecision(2) << this->customerAccount->getBalance() <<
+            "\n";
     summary << "Transaction History:\n";
-    summary << this->account->printTransactionHistory();
+    summary << this->customerAccount->printTransactionHistory();
     return summary.str();
 }

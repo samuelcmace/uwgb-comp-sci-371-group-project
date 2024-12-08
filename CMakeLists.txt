@@ -11,13 +11,13 @@ include_directories(lib)
 
 set(CMAKE_CXX_STANDARD 17)
 set(SOURCES
-    src/CSVObject.cpp
-    src/Bank.cpp
-    src/User.cpp
-    src/Manager.cpp
-    src/Customer.cpp
-    src/BankAccount.cpp
-    src/Transaction.cpp
+        src/CSVObject.cpp
+        src/Bank.cpp
+        src/User.cpp
+        src/Manager.cpp
+        src/Customer.cpp
+        src/BankAccount.cpp
+        src/Transaction.cpp
 )
 
 # Copy the assets directory from the source directory into whatever the output (or build) directory happens to be...

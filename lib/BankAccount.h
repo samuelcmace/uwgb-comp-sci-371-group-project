@@ -13,22 +13,22 @@
 #include "CSVObject.h"
 
 class BankAccount : public CSVObject {
-
 private:
-    std::vector<Transaction*> transactionHistory; // History of transactions
+    std::vector<Transaction *> transactionHistory; // History of transactions
     void loadTransactionsFromCSV();
 
 public:
+    BankAccount(const std::string &accountName);
 
-    BankAccount(const std::string& accountName);
     ~BankAccount();
 
-    void deposit(double amount);
-    void withdraw(double amount);
+    bool deposit(double amount);
+
+    bool withdraw(double amount);
 
     double getBalance() const;
-    std::string getTransactionList() const;
 
+    std::string printTransactionHistory() const;
 };
 
 #endif // BANKACCOUNT_H

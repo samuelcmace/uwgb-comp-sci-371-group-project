@@ -1,15 +1,28 @@
 #ifndef CUSTOMER_H
 #define CUSTOMER_H
 
+#include "BankAccount.h"
 #include "User.h"
+
+#include <iomanip>
 
 class Customer : public User {
 private:
-    BankAccount* customerAccount;
+    BankAccount *customerAccount;
+
 public:
-    Customer();
-    User::Type getAccountType() const;
+    Customer(const std::string &username, const std::string &password);
+
+    ~Customer();
+
+    Type getAccountType() const;
+
     double getBalance() const;
+
+    bool deposit(double amount);
+
+    bool withdrawal(double amount);
+
     std::string printAccountSummary() const;
 };
 

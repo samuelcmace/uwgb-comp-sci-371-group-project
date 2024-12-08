@@ -16,14 +16,12 @@ public:
     // Constructor
     Manager(std::string name, std::string password);
 
-    // Login validation
-    bool login(const std::string& inputName, const std::string& inputPassword);
-
     // View all user data
     void viewAllUserData() const;
-    void setBalance(double newBalance);
-    std::string getAccountType() const;
 
+    void setBalance(double newBalance);
+
+    Type getAccountType() const;
 };
 
 #endif // MANAGER_H
