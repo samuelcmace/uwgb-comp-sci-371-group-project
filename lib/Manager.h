@@ -12,9 +12,11 @@
 #include "User.h"
 
 class Manager : public User {
+
 public:
     // Constructor
     Manager(std::string name, std::string password);
+    ~Manager();
 
     // View all user data
     void viewAllUserData() const;
@@ -22,6 +24,7 @@ public:
     void setBalance(double newBalance);
 
     Type getAccountType() const;
+
 };
 
 #endif // MANAGER_H

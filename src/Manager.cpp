@@ -15,6 +15,12 @@
 Manager::Manager(std::string name, std::string password): User(name, password) {
 }
 
+Manager::~Manager() = default;
+
+User::Type Manager::getAccountType() const {
+    return User::Type::MANAGER;
+}
+
 // View all user data
 void Manager::viewAllUserData() const {
     Bank *instance = Bank::getInstance();
