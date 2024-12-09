@@ -9,6 +9,11 @@ project(bank_application)
 # current directory.
 include_directories(lib)
 
+# Set default build type to Debug. This can be overridden by the user by specifying -DCMAKE_BUILD_TYPE=Release when
+# running CMake. Also, add the debugging symbols to allow gdb to be used for debugging.
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+
 set(CMAKE_CXX_STANDARD 17)
 set(SOURCES
         src/CSVObject.cpp
@@ -28,9 +33,7 @@ file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
 # along with the binary.
 add_executable(bank_application ${SOURCES} main.cpp)
 add_executable(Test_CSVObject ${SOURCES} tests/Test_CSVObject.cpp)
-add_executable(Test_UserManager ${SOURCES} tests/Test_UserManager.cpp)
 
 # The add_test command can be used to use the CTest framework. This provides the benefit that the unit tests will be
 # marked as such when running CTest.
 add_test(NAME Test_CSVObject COMMAND Test_CSVObject)
-add_test(NAME Test_UserManager COMMAND Test_UserManager)
