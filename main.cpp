@@ -13,7 +13,7 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
     // Bank is the instance of the singleton class.
-    Bank *bankInstance = Bank::getInstance();
+    Bank& bankInstance = Bank::getInstance();
     //Main loop of the program
     double amount;
     bool isLoggedIn;
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
                 std::cin >> username;
                 std::cout << "Enter Password: ";
                 std::cin >> password;
-                isLoggedIn = bankInstance->login(username, password);
+                isLoggedIn = bankInstance.login(username, password);
                 if (!isLoggedIn) {
                     std::cout << "Login failed." << std::endl;
                 }
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
                 std::cerr << "You are a manager. Login to the Manager page." << endl;
                 continue;
             }
-            Customer *currentUser = (Customer *) bankInstance->getUserByUsername(username);
+            Customer *currentUser = (Customer *) bankInstance.getUserByUsername(username);
 
             //User Options:
             int userOptions = 0;
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
             cin >> usernam;
             cout << "Enter Password: ";
             cin >> passwor;
-            bankInstance->createUser(usernam, passwor, User::Type::CUSTOMER);
+            bankInstance.createUser(usernam, passwor, User::Type::CUSTOMER);
             cout << "Account successfully created." << endl;
         } else if (input == 3) {
             //Manager Login
@@ -90,8 +90,8 @@ int main(int argc, char *argv[]) {
             cin >> userN;
             cout << "Enter Password: ";
             cin >> passW;
-            if (bankInstance->login(userN, passW)) {
-                User *manager = bankInstance->getUserByUsername(userN);
+            if (bankInstance.login(userN, passW)) {
+                User *manager = bankInstance.getUserByUsername(userN);
                 if (manager->getAccountType() != User::Type::MANAGER) {
                     std::cerr << "You must be a manager to access this page." << std::endl;
                     continue;
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
                     cin >> userna;
                     cout << "Enter Password: ";
                     cin >> passwo;
-                    if (bankInstance->createUser(userna, passwo, User::Type::CUSTOMER)) {
+                    if (bankInstance.createUser(userna, passwo, User::Type::CUSTOMER)) {
                         cout << "Account successfully created." << endl;
                     } else {
                         std::cerr << "Account could not be created." << std::endl;
@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
                     cout << "Enter username of account to be deleted:";
                     cin >> enteredUsername;
                     //TODO: delete method of bankInstance
-                    if (bankInstance->deleteUser(enteredUsername)) {
+                    if (bankInstance.deleteUser(enteredUsername)) {
                         std::cout << "Account successfully deleted." << std::endl;
                     } else {
                         std::cerr << "Account could not be deleted." << std::endl;
@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
                     std::cin >> usern;
                     std::cout << "Enter amount of new balance: ";
                     std::cin >> amount;
-                    bankInstance->updateBalance(usern, amount);
+                    bankInstance.updateBalance(usern, amount);
                     std::cout << "Balance updated successfully." << endl;
                 } else if (managerInput == 4) {
                     break;

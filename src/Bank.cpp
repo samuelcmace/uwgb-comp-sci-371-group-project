@@ -12,9 +12,6 @@
 // Initialize static member
 int Bank::activeAccounts = 0;
 
-// Singleton instance of Bank.
-Bank* Bank::instance = nullptr;
-
 // Constructor: Initializes the Bank with the CSV file
 Bank::Bank()
     : CSVObject("users.csv", {"USERNAME", "PASSWORD", "TYPE"}) {

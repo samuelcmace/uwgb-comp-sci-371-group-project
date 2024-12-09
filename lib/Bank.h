@@ -17,21 +17,16 @@ private:
 
     void loadUsersFromFile();
 
-    static Bank *instance;
-
 public:
-    // Delete copy constructor and assignment operator
-    Bank(const Bank &object) = delete;
-
-    Bank &operator=(const Bank &object) = delete;
 
     // Static method to get the singleton instance of Bank.
-    static Bank *getInstance() {
-        if (instance == nullptr) {
-            instance = new Bank();
-        }
+    static Bank& getInstance() {
+        static Bank instance;
         return instance;
     }
+
+    Bank(const Bank &) = delete;
+    Bank &operator=(const Bank &) = delete;
 
     ~Bank();
 
