@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     Manager *currentManager = nullptr;
     while (input != 4) {
         input = 0;
-        std::cout << "Make a selection" << std::endl
+        std::cout << "Make a selection:" << std::endl
                 << "1. User Login" << std::endl
                 << "2. Create Account" << std::endl
                 << "3. Manager Login" << std::endl
@@ -66,7 +66,11 @@ int main(int argc, char *argv[]) {
                 int userOptions = 0;
                 while (userOptions != 4) {
                     userOptions = 0;
-                    std::cout << "Make a selection:/n1. Withdrawal\n2. Deposit/n3. Account Summary\n4. Log Out\n";
+                    std::cout << "Make a selection:" << std::endl
+                            << "1. Withdrawal" << std::endl
+                            << "2. Deposit" << std::endl
+                            << "3. Account Summary" << std::endl
+                            << "4. Log Out" << std::endl;
                     std::cin >> userOptions;
                     if (userOptions == 1) {
                         //Withdrawal Selected
@@ -84,23 +88,23 @@ int main(int argc, char *argv[]) {
                         //Print Account Summary
                         cout << currentCustomer->printAccountSummary();
                     } else {
-                        std::cout << "Invalid Input\n";
+                        std::cout << "Invalid Input" << std::endl;
                     }
                 }
             }
         } else if (input == 2) {
             //Create Account
             string usernam, passwor;
-            cout << "Creating new account.\nEnter Username: ";
+            cout << "Creating new account." << std::endl << "Enter Username: ";
             cin >> usernam;
             cout << "Enter Password: ";
             cin >> passwor;
             bankInstance.createUser(usernam, passwor, User::Type::CUSTOMER);
-            cout << "Account successfully created." << endl;
+            //cout << "Account successfully created." << endl;
         } else if (input == 3) {
             //Manager Login
             string userN, passW;
-            cout << "Manager Login\nEnter Username: ";
+            cout << "Manager Login" << std::endl << "Enter Username: ";
             cin >> userN;
             cout << "Enter Password: ";
             cin >> passW;
@@ -117,12 +121,17 @@ int main(int argc, char *argv[]) {
             managerInput = 0;
             while (managerInput != 4) {
                 managerInput = 0;
-                cout << "Manager Options:\n1. Create Account\n2. Delete Account\n3. Edit Balance\n4. Logout\n";
+                cout << "Manager Options:" << std::endl
+                        << "1. Create Account" << std::endl
+                        << "2. Delete Account" << std::endl
+                        << "3. Edit Balance" << std::endl
+                        << "4. Logout" << std::endl
+                        << "=> ";
                 cin >> managerInput;
                 if (managerInput == 1) {
                     //Create Account
                     string userna, passwo;
-                    cout << "Creating new account.\nEnter Username: ";
+                    cout << "Creating new account." << std::endl << "Enter Username: ";
                     cin >> userna;
                     cout << "Enter Password: ";
                     cin >> passwo;
@@ -150,7 +159,7 @@ int main(int argc, char *argv[]) {
                     std::cout << "Enter amount of new balance: ";
                     std::cin >> amount;
                     bankInstance.updateBalance(usern, amount);
-                    std::cout << "Balance updated successfully." << endl;
+                    //std::cout << "Balance updated successfully." << endl;
                 } else if (managerInput == 4) {
                     break;
                 } else {
@@ -161,6 +170,6 @@ int main(int argc, char *argv[]) {
             std::cout << "Invalid Input";
         }
     }
-    std::cout << "\nExiting Program...";
+    std::cout << std::endl << "Exiting Program...";
     return 0;
 }

@@ -33,7 +33,7 @@ CSVObject::CSVObject(std::string filePath, std::vector<std::string> columnNames)
         }
     } else {
         this->data.resize(this->data.size() + 1);
-        for (std::string columnName : columnNames) {
+        for (std::string columnName: columnNames) {
             this->data[0].push_back(columnName);
         }
         this->writeFile();

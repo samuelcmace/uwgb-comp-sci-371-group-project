@@ -9,7 +9,9 @@
 #include <sstream>
 
 // Constructor: Links a User object to the account
-BankAccount::BankAccount(const std::string &accountName) : CSVObject(accountName + ".csv", {"TYPE", "AMOUNT", "TIMESTAMP"}) {
+BankAccount::BankAccount(const std::string &accountName) : CSVObject(accountName + ".csv", {
+                                                                         "TYPE", "AMOUNT", "TIMESTAMP"
+                                                                     }) {
     this->loadTransactionsFromCSV();
 }
 
@@ -44,7 +46,7 @@ bool BankAccount::deposit(double amount) {
 
     // Schema: "TYPE", "AMOUNT", "TIMESTAMP"
     this->createRow({
-        Transaction::convertTimestampToString(Transaction::DEPOSIT),
+        Transaction::getTypeString(Transaction::DEPOSIT),
         std::to_string(amount),
         newTransaction->getTimestamp()
     });
@@ -70,7 +72,7 @@ bool BankAccount::withdraw(double amount) {
 
     // Schema: "TYPE", "AMOUNT", "TIMESTAMP"
     this->createRow({
-        Transaction::convertTimestampToString(Transaction::WITHDRAWAL),
+        Transaction::getTypeString(Transaction::WITHDRAWAL),
         std::to_string(amount),
         newTransaction->getTimestamp()
     });

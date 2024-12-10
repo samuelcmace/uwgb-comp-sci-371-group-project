@@ -33,7 +33,7 @@ public:
     void createUserInMemory(const std::string &username, const std::string &password, User::Type type);
 
     // Methods to manage users
-    bool createUser(const std::string &username, const std::string &password, const User::Type& userType);
+    bool createUser(const std::string &username, const std::string &password, const User::Type &userType);
 
     bool deleteUser(const std::string &accountID);
 
