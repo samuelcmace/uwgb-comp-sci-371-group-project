@@ -21,7 +21,7 @@ bool Customer::deposit(double amount) {
 }
 
 bool Customer::withdrawal(double amount) {
-    return this->customerAccount->deposit(amount);
+    return this->customerAccount->withdraw(amount);
 }
 
 std::string Customer::printAccountSummary() const {

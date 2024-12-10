@@ -9,7 +9,7 @@
 #include <sstream>
 
 // Constructor: Links a User object to the account
-BankAccount::BankAccount(const std::string &accountName) : CSVObject(accountName, {"TYPE", "AMOUNT", "TIMESTAMP"}) {
+BankAccount::BankAccount(const std::string &accountName) : CSVObject(accountName + ".csv", {"TYPE", "AMOUNT", "TIMESTAMP"}) {
     this->loadTransactionsFromCSV();
 }
 

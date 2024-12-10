@@ -38,7 +38,7 @@ void Bank::createUserInMemory(const std::string &username, const std::string &pa
 }
 
 // Create a new user
-bool Bank::createUser(const std::string &username, const std::string &password, const User::Type userType) {
+bool Bank::createUser(const std::string &username, const std::string &password, const User::Type& userType) {
     // Check for duplicate accountID
     for (const auto &user: users) {
         if (user->getUsername() == username) {
@@ -98,7 +98,7 @@ void Bank::loadUsersFromFile() {
     for (int i = 1; i < this->getRowCount(); ++i) {
         // Skip header row
         std::vector<std::string> row = this->readRow(i);
-        if (row.size() < 4) {
+        if (row.size() != 3) {
             std::cerr << "Warning: Malformed row in users.csv\n";
             continue;
         }

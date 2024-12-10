@@ -15,12 +15,12 @@ CSVObject::CSVObject(std::string filePath, std::vector<std::string> columnNames)
     // Use the C++17 std::filesystem namespace to check whether the file exists on the system first...
     bool fileAlreadyExists = std::filesystem::exists(filePath);
 
-    std::cout << "Reading from file " << filePath << "..." << std::endl;
-    this->readFile();
-
     // If the file already existed prior to reading from it, check if the column names align with what is specified
     // in the schema. If not, throw a runtime error...
     if (fileAlreadyExists) {
+        std::cout << "Reading from file " << filePath << "..." << std::endl;
+        this->readFile();
+
         std::cout << "Verifying schema of column names..." << std::endl;
         bool columnsMatch = true;
         for (int i = 0; i < this->data[0].size(); i++) {
@@ -31,6 +31,12 @@ CSVObject::CSVObject(std::string filePath, std::vector<std::string> columnNames)
         if (!columnsMatch) {
             throw std::runtime_error("Error: The specified column names do not match! Aborting...");
         }
+    } else {
+        this->data.resize(this->data.size() + 1);
+        for (std::string columnName : columnNames) {
+            this->data[0].push_back(columnName);
+        }
+        this->writeFile();
     }
 }
 

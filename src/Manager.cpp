@@ -23,7 +23,7 @@ User::Type Manager::getAccountType() const {
 
 // View all user data
 void Manager::viewAllUserData() const {
-    Bank& instance = Bank::getInstance();
+    Bank &instance = Bank::getInstance();
     std::vector<User *> users = instance.getUsers();
 
     if (users.size() == 0) {
