@@ -1,5 +1,6 @@
 #include <Customer.h>
 #include <iostream>
+#include <Manager.h>
 #include <string>
 #include <memory>
 
@@ -13,20 +14,28 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
     // Bank is the instance of the singleton class.
-    Bank *bankInstance = Bank::getInstance();
+    Bank &bankInstance = Bank::getInstance();
     //Main loop of the program
     double amount;
     bool isLoggedIn;
     int input;
     int managerInput;
-    User *currentUser;
+    User *currentUser = nullptr;
+    Customer *currentCustomer = nullptr;
+    Manager *currentManager = nullptr;
     while (input != 4) {
         input = 0;
-        std::cout << "Make a selection\n1. User Login\n2. Create Account\n3. Manager Login\n4. Exit\n";
+        std::cout << "Make a selection:" << std::endl
+                << "1. User Login" << std::endl
+                << "2. Create Account" << std::endl
+                << "3. Manager Login" << std::endl
+                << "4. Exit" << std::endl
+                << "=> ";
         std::cin >> input;
         if (input == 1) {
             std::string username, password;
             isLoggedIn = false;
+            int count = 0;
 
             while (isLoggedIn == false) {
                 //User Login Selected
@@ -34,65 +43,75 @@ int main(int argc, char *argv[]) {
                 std::cin >> username;
                 std::cout << "Enter Password: ";
                 std::cin >> password;
-                isLoggedIn = bankInstance->login(username, password);
+                isLoggedIn = bankInstance.login(username, password);
                 if (!isLoggedIn) {
                     std::cout << "Login failed." << std::endl;
+                    count++;
+                }
+                if (count >= 3) {
+                    break;
                 }
             }
+            if (isLoggedIn) {
+                //Check if user is a manager
+                currentUser = bankInstance.getUserByUsername(username);
+                if (currentUser->getAccountType() == User::Type::MANAGER) {
+                    std::cerr << "You are a manager. Login to the Manager page." << endl;
+                    continue;
+                }
+                //Customer* currentCustomer = (Customer*) bankInstance.getUserByUsername(username);
+                currentCustomer = (Customer *) bankInstance.getUserByUsername(username);
 
-            //Check if user is a manager
-            if (currentUser->getAccountType() == User::Type::MANAGER) {
-                std::cerr << "You are a manager. Login to the Manager page." << endl;
-                continue;
-            }
-            Customer *currentUser = (Customer *) bankInstance->getUserByUsername(username);
-
-            //User Options:
-            int userOptions = 0;
-            while (userOptions != 4) {
-                userOptions = 0;
-                std::cout << "Make a selection:/n1. Withdrawal\n2. Deposit/n3. Account Summary\n4. Log Out\n";
-                std::cin >> userOptions;
-                if (userOptions == 1) {
-                    //Withdrawal Selected
-                    amount = 0.0;
-                    cout << "Amount for withdrawal: ";
-                    cin >> amount;
-                    currentUser->withdrawal(amount);
-                } else if (userOptions == 2) {
-                    //Deposit
-                    amount = 0.0;
-                    cout << "Amount for deposit: ";
-                    cin >> amount;
-                    currentUser->deposit(amount);
-                } else if (userOptions == 3) {
-                    //Print Account Summary
-                    currentUser->printAccountSummary();
-                } else {
-                    std::cout << "Invalid Input\n";
+                //User Options:
+                int userOptions = 0;
+                while (userOptions != 4) {
+                    userOptions = 0;
+                    std::cout << "Make a selection:" << std::endl
+                            << "1. Withdrawal" << std::endl
+                            << "2. Deposit" << std::endl
+                            << "3. Account Summary" << std::endl
+                            << "4. Log Out" << std::endl;
+                    std::cin >> userOptions;
+                    if (userOptions == 1) {
+                        //Withdrawal Selected
+                        amount = 0.0;
+                        cout << "Amount for withdrawal: ";
+                        cin >> amount;
+                        currentCustomer->withdrawal(amount);
+                    } else if (userOptions == 2) {
+                        //Deposit
+                        amount = 0.0;
+                        cout << "Amount for deposit: ";
+                        cin >> amount;
+                        currentCustomer->deposit(amount);
+                    } else if (userOptions == 3) {
+                        //Print Account Summary
+                        cout << currentCustomer->printAccountSummary();
+                    } else {
+                        std::cout << "Invalid Input" << std::endl;
+                    }
                 }
             }
         } else if (input == 2) {
             //Create Account
             string usernam, passwor;
-            cout << "Creating new account.\nEnter Username: ";
+            cout << "Creating new account." << std::endl << "Enter Username: ";
             cin >> usernam;
             cout << "Enter Password: ";
             cin >> passwor;
-            bankInstance->createUser(usernam, passwor, User::Type::CUSTOMER);
-            cout << "Account successfully created." << endl;
+            bankInstance.createUser(usernam, passwor, User::Type::CUSTOMER);
+            //cout << "Account successfully created." << endl;
         } else if (input == 3) {
             //Manager Login
-            //TODO
-            //Authenticate Manager login, give access to creating/deleting/managing accounts.
             string userN, passW;
-            cout << "Manager Login\nEnter Username: ";
+            cout << "Manager Login" << std::endl << "Enter Username: ";
             cin >> userN;
             cout << "Enter Password: ";
             cin >> passW;
-            if (bankInstance->login(userN, passW)) {
-                User *manager = bankInstance->getUserByUsername(userN);
-                if (manager->getAccountType() != User::Type::MANAGER) {
+            if (bankInstance.login(userN, passW)) {
+                //User *manager = bankInstance.getUserByUsername(userN);
+                currentManager = (Manager *) bankInstance.getUserByUsername(userN);
+                if (currentManager->getAccountType() != User::Type::MANAGER) {
                     std::cerr << "You must be a manager to access this page." << std::endl;
                     continue;
                 }
@@ -102,16 +121,21 @@ int main(int argc, char *argv[]) {
             managerInput = 0;
             while (managerInput != 4) {
                 managerInput = 0;
-                cout << "Manager Options:\n1. Create Account\n2. Delete Account\n3. Edit Balance\n4. Logout\n";
+                cout << "Manager Options:" << std::endl
+                        << "1. Create Account" << std::endl
+                        << "2. Delete Account" << std::endl
+                        << "3. Edit Balance" << std::endl
+                        << "4. Logout" << std::endl
+                        << "=> ";
                 cin >> managerInput;
                 if (managerInput == 1) {
                     //Create Account
                     string userna, passwo;
-                    cout << "Creating new account.\nEnter Username: ";
+                    cout << "Creating new account." << std::endl << "Enter Username: ";
                     cin >> userna;
                     cout << "Enter Password: ";
                     cin >> passwo;
-                    if (bankInstance->createUser(userna, passwo, User::Type::CUSTOMER)) {
+                    if (bankInstance.createUser(userna, passwo, User::Type::CUSTOMER)) {
                         cout << "Account successfully created." << endl;
                     } else {
                         std::cerr << "Account could not be created." << std::endl;
@@ -121,8 +145,7 @@ int main(int argc, char *argv[]) {
                     string enteredUsername;
                     cout << "Enter username of account to be deleted:";
                     cin >> enteredUsername;
-                    //TODO: delete method of bankInstance
-                    if (bankInstance->deleteUser(enteredUsername)) {
+                    if (bankInstance.deleteUser(enteredUsername)) {
                         std::cout << "Account successfully deleted." << std::endl;
                     } else {
                         std::cerr << "Account could not be deleted." << std::endl;
@@ -135,8 +158,8 @@ int main(int argc, char *argv[]) {
                     std::cin >> usern;
                     std::cout << "Enter amount of new balance: ";
                     std::cin >> amount;
-                    bankInstance->updateBalance(usern, amount);
-                    std::cout << "Balance updated successfully." << endl;
+                    bankInstance.updateBalance(usern, amount);
+                    //std::cout << "Balance updated successfully." << endl;
                 } else if (managerInput == 4) {
                     break;
                 } else {
@@ -147,8 +170,6 @@ int main(int argc, char *argv[]) {
             std::cout << "Invalid Input";
         }
     }
-    std::cout << "\nExiting Program...";
-    delete currentUser;
-
+    std::cout << std::endl << "Exiting Program...";
     return 0;
 }

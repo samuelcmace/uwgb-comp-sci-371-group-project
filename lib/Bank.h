@@ -17,28 +17,23 @@ private:
 
     void loadUsersFromFile();
 
-    static Bank *instance;
-
 public:
-    // Delete copy constructor and assignment operator
-    Bank(const Bank &object) = delete;
-
-    Bank &operator=(const Bank &object) = delete;
-
     // Static method to get the singleton instance of Bank.
-    static Bank *getInstance() {
-        if (instance == nullptr) {
-            instance = new Bank();
-        }
+    static Bank &getInstance() {
+        static Bank instance;
         return instance;
     }
+
+    Bank(const Bank &) = delete;
+
+    Bank &operator=(const Bank &) = delete;
 
     ~Bank();
 
     void createUserInMemory(const std::string &username, const std::string &password, User::Type type);
 
     // Methods to manage users
-    bool createUser(const std::string &username, const std::string &password, const User::Type userType);
+    bool createUser(const std::string &username, const std::string &password, const User::Type &userType);
 
     bool deleteUser(const std::string &accountID);
 

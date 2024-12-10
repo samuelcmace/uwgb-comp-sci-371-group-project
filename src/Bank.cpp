@@ -12,9 +12,6 @@
 // Initialize static member
 int Bank::activeAccounts = 0;
 
-// Singleton instance of Bank.
-Bank* Bank::instance = nullptr;
-
 // Constructor: Initializes the Bank with the CSV file
 Bank::Bank()
     : CSVObject("users.csv", {"USERNAME", "PASSWORD", "TYPE"}) {
@@ -41,11 +38,11 @@ void Bank::createUserInMemory(const std::string &username, const std::string &pa
 }
 
 // Create a new user
-bool Bank::createUser(const std::string &username, const std::string &password, const User::Type userType) {
+bool Bank::createUser(const std::string &username, const std::string &password, const User::Type &userType) {
     // Check for duplicate accountID
     for (const auto &user: users) {
         if (user->getUsername() == username) {
-            std::cout << "Error: Username already exists.\n";
+            //std::cout << "Error: Username already exists.\n";
             return false;
         }
     }
@@ -56,7 +53,7 @@ bool Bank::createUser(const std::string &username, const std::string &password, 
 
     // Increment active accounts
     activeAccounts++;
-    std::cout << "User created successfully.\n";
+    //std::cout << "User created successfully.\n";
     return true;
 }
 
@@ -77,7 +74,7 @@ bool Bank::deleteUser(const std::string &username) {
         }
     }
 
-    std::cerr << "User does not exist." << std::endl;
+    //std::cerr << "User does not exist." << std::endl;
     return false;
 }
 
@@ -101,7 +98,7 @@ void Bank::loadUsersFromFile() {
     for (int i = 1; i < this->getRowCount(); ++i) {
         // Skip header row
         std::vector<std::string> row = this->readRow(i);
-        if (row.size() < 4) {
+        if (row.size() != 3) {
             std::cerr << "Warning: Malformed row in users.csv\n";
             continue;
         }
@@ -150,7 +147,7 @@ void Bank::updateBalance(const std::string &username, double newBalance) {
             if (newTransactionType == Transaction::DEPOSIT) {
                 customer->deposit(transactionAmount);
             } else {
-                customer->deposit(transactionAmount);
+                customer->withdrawal(transactionAmount);
             }
 
             std::cout << "Balance updated successfully for account " << username << ".\n";
