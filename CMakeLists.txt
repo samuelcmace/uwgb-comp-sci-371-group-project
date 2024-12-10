@@ -26,7 +26,8 @@ set(SOURCES
 )
 
 # Copy the assets directory from the source directory into whatever the output (or build) directory happens to be...
-file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/assets/test_data DESTINATION ${CMAKE_BINARY_DIR}/assets)
+file(COPY ${CMAKE_SOURCE_DIR}/assets/users.csv DESTINATION ${CMAKE_BINARY_DIR})
 
 # For each project executable, specify the name of the executable (as it will be after compilation), as well as the
 # .cpp files that need to be linked to the project, as well as the .cpp that contains the main function to be executed
